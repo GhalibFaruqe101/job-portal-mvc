@@ -1,0 +1,27 @@
+# Ignore upload contents but keep .gitkeep placeholders
+/uploads/*
+!/uploads/**/.gitkeep
+
+# Keep repository configs and placeholders
+.env
+.env.local
+/.vscode/
+.idea/
+
+# Dependency folders
+node_modules/
+vendor/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+
+# Logs and databases
+*.log
+*.sqlite
+
+# Composer
+/composer.lock
+
+# phpStorm
+/.idea/
