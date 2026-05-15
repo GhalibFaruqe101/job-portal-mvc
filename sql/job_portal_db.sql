@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 14, 2026 at 06:06 PM
+-- Generation Time: May 15, 2026 at 03:50 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,37 @@ SET time_zone = "+00:00";
 --
 -- Database: `job_portal_db`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_action_logs`
+--
+
+CREATE TABLE `admin_action_logs` (
+  `id` int(11) NOT NULL,
+  `admin_id` int(11) NOT NULL,
+  `target_id` int(11) DEFAULT NULL,
+  `target_type` varchar(50) NOT NULL,
+  `action` varchar(80) NOT NULL,
+  `reason` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `announcements`
+--
+
+CREATE TABLE `announcements` (
+  `id` int(11) NOT NULL,
+  `admin_id` int(11) NOT NULL,
+  `title` varchar(180) NOT NULL,
+  `body` text NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -145,6 +176,28 @@ CREATE TABLE `messages` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `platform_policies`
+--
+
+CREATE TABLE `platform_policies` (
+  `id` int(11) NOT NULL,
+  `policy_key` varchar(100) NOT NULL,
+  `policy_value` varchar(255) NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `platform_policies`
+--
+
+INSERT INTO `platform_policies` (`id`, `policy_key`, `policy_value`, `updated_at`) VALUES
+(1, 'max_jobs_per_employer', '10', '2026-05-14 23:56:08'),
+(2, 'max_active_applications_per_seeker', '20', '2026-05-14 23:56:08'),
+(3, 'resume_visibility_default', 'private', '2026-05-14 23:56:08');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `recruiter_clients`
 --
 
@@ -244,11 +297,28 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `phone`, `role`, `profile_pic`, `is_active`, `is_verified`, `created_at`) VALUES
-(2, 'Jannatul Sadia', 'jannatulsadia0@gmail.com', '$2y$10$AgnIL3.Qr4m41nA4ZSWyUeASlrCMl0E5HcQpCPvVMmbf2dKZBWUxe', '01705899745', 'seeker', 'assets/uploads/profile_pics/pic_2_1778490528.jpg', 1, 0, '2026-05-11 06:59:51');
+(2, 'Jannatul Sadia', 'jannatulsadia0@gmail.com', '$2y$10$AgnIL3.Qr4m41nA4ZSWyUeASlrCMl0E5HcQpCPvVMmbf2dKZBWUxe', '01705899745', 'seeker', 'assets/uploads/profile_pics/pic_2_1778490528.jpg', 1, 0, '2026-05-11 06:59:51'),
+(3, 'Shaikh Sameer', 'shaikhsamir372@gmail.com', '$2y$10$Y8yKmAEh8/TdqS8vcvcMcuNb0M1PdajzAv.zZsDUoX/4a3/FBpQfa', '01640037096', 'seeker', NULL, 1, 0, '2026-05-14 17:55:13'),
+(4, 'System Admin', 'admin@jobportal.test', '$2y$10$hIu55Ys/uVoAi7nC8EE0L.mMBmJiaGSW8E5kEdCtg7WcgKdGsK7au', '01000000000', 'admin', NULL, 1, 1, '2026-05-14 23:56:08');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `admin_action_logs`
+--
+ALTER TABLE `admin_action_logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `admin_id` (`admin_id`),
+  ADD KEY `target_id` (`target_id`);
+
+--
+-- Indexes for table `announcements`
+--
+ALTER TABLE `announcements`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `admin_id` (`admin_id`);
 
 --
 -- Indexes for table `applications`
@@ -306,6 +376,13 @@ ALTER TABLE `messages`
   ADD KEY `application_id` (`application_id`);
 
 --
+-- Indexes for table `platform_policies`
+--
+ALTER TABLE `platform_policies`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `policy_key` (`policy_key`);
+
+--
 -- Indexes for table `recruiter_clients`
 --
 ALTER TABLE `recruiter_clients`
@@ -356,6 +433,18 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `admin_action_logs`
+--
+ALTER TABLE `admin_action_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `announcements`
+--
+ALTER TABLE `announcements`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `applications`
 --
 ALTER TABLE `applications`
@@ -398,6 +487,12 @@ ALTER TABLE `messages`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `platform_policies`
+--
+ALTER TABLE `platform_policies`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `recruiter_clients`
 --
 ALTER TABLE `recruiter_clients`
@@ -431,11 +526,24 @@ ALTER TABLE `seeker_profiles`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `admin_action_logs`
+--
+ALTER TABLE `admin_action_logs`
+  ADD CONSTRAINT `admin_action_logs_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `admin_action_logs_ibfk_2` FOREIGN KEY (`target_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `announcements`
+--
+ALTER TABLE `announcements`
+  ADD CONSTRAINT `announcements_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `applications`
