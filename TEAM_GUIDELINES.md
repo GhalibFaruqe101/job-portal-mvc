@@ -32,7 +32,7 @@ Project layout (shared assets + per-role workspaces):
 ```
 
 2. The Data Contract: Sessions (MANDATORY)
------------------------------------------
+
 Each module will implement its own `login.php` / `AuthController.php`. On successful login you MUST set the following exact session keys (case-sensitive):
 
 - `$_SESSION['user_id']` : The integer ID from the `users` table.
@@ -171,6 +171,7 @@ Copy and paste this into your view files (e.g., `dashboard.php`).
 
 </body>
 </html>
+```
 
 ## 1. The Global CSS (`/public/css/style.css`)
 
