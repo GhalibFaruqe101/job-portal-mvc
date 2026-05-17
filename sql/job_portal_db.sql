@@ -204,7 +204,7 @@ INSERT INTO `platform_policies` (`id`, `policy_key`, `policy_value`, `updated_at
 CREATE TABLE `recruiter_clients` (
   `id` int(11) NOT NULL,
   `recruiter_id` int(11) NOT NULL,
-  `employer_id` int(11) NOT NULL,
+  `employer_id` int(11) DEFAULT NULL,
   `company_name_override` varchar(150) DEFAULT NULL,
   `added_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -593,7 +593,7 @@ ALTER TABLE `messages`
 --
 ALTER TABLE `recruiter_clients`
   ADD CONSTRAINT `recruiter_clients_ibfk_1` FOREIGN KEY (`recruiter_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `recruiter_clients_ibfk_2` FOREIGN KEY (`employer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `recruiter_clients_ibfk_2` FOREIGN KEY (`employer_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `recruiter_outreach`
