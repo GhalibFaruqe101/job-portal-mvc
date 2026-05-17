@@ -54,6 +54,8 @@ body { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
 .status-chip.shortlisted{ background:#fefce8; color:#a16207; border-color:#fef08a; }
 .status-chip.interview  { background:#fdf4ff; color:#7e22ce; border-color:#e9d5ff; }
 .status-chip.rejected   { background:#fff1f2; color:#be123c; border-color:#fecdd3; }
+.status-chip.withdrawn  { background:#f8fafc; color:#64748b; border-color:#e2e8f0; }
+.status-chip.hired      { background:#ecfdf5; color:#047857; border-color:#a7f3d0; }
 .status-chip.active     { box-shadow: 0 0 0 3px rgba(124,58,237,.25); }
 
 /* Search + Filter Bar */
@@ -144,6 +146,7 @@ body { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
 .badge-interview   { background:#fdf4ff; color:#7e22ce; }
 .badge-rejected    { background:#fff1f2; color:#be123c; }
 .badge-withdrawn   { background:#f8fafc; color:#64748b; }
+.badge-hired       { background:#ecfdf5; color:#047857; }
 
 /* Status Dropdown (AJAX) */
 .status-select {
