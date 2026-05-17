@@ -65,7 +65,7 @@ CREATE TABLE `applications` (
   `recruiter_id` int(11) DEFAULT NULL,
   `cover_letter` text DEFAULT NULL,
   `resume_path` varchar(255) DEFAULT NULL,
-  `status` enum('submitted','reviewed','shortlisted','interview','rejected','withdrawn') DEFAULT 'submitted',
+  `status` enum('submitted','reviewed','shortlisted','interview','rejected','withdrawn','hired') DEFAULT 'submitted',
   `applied_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
