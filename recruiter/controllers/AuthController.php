@@ -42,6 +42,8 @@ function handleLogin($userModel) {
         if ($user && $user['role'] === 'recruiter' && $userModel->verifyPassword($password, $user['password_hash'])) {
             if (!$user['is_active']) {
                 $errors[] = "Your account has been deactivated. Contact support.";
+            } elseif (!$user['is_verified']) {
+                $errors[] = "Your account is pending admin verification. Please wait for approval.";
             } else {
                 // Mandatory session keys (team contract)
                 $_SESSION['user_id']   = $user['id'];
@@ -98,7 +100,7 @@ function handleRegister($userModel) {
 
     if (empty($errors)) {
         if ($userModel->createUser($name, $email, $phone, $password, $agency_name)) {
-            $_SESSION['auth_success'] = "Registration successful! Please log in.";
+            $_SESSION['auth_success'] = "Registration submitted! An admin will verify your account before you can log in.";
             header("Location: ../views/login.php");
             exit();
         } else {
