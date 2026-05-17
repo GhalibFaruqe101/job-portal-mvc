@@ -1,0 +1,47 @@
+/* /public/css/recruiter/outreach.css */
+
+body { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
+.global-nav .nav-links a.active { color: #8b5cf6; font-weight: 600; }
+.global-nav .nav-links a:hover  { color: #7c3aed; }
+
+.outreach-main { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; }
+.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; }
+.page-header h1 { font-size: 1.75rem; font-weight: 700; color: #1e293b; margin-bottom: 0.25rem; }
+.page-header p  { color: #64748b; font-size: 0.95rem; }
+
+.btn-new-outreach { padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: #fff; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.2s ease; }
+.btn-new-outreach:hover { background: linear-gradient(135deg, #6d28d9, #5b21b6); transform: translateY(-1px); }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+.stat-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+.stat-card h3 { font-size: 0.9rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+.stat-value { font-size: 2rem; font-weight: 700; color: #1e293b; }
+.text-blue { color: #3b82f6; }
+.text-green { color: #10b981; }
+
+.filter-bar { margin-bottom: 1.5rem; }
+.filter-bar select { padding: 0.7rem 1rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: 'Inter', sans-serif; color: #334155; background: #fff; min-width: 200px; cursor: pointer; transition: border-color 0.2s; }
+.filter-bar select:focus { outline: none; border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139,92,246,.1); }
+
+.outreach-container { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; }
+.table-responsive { overflow-x: auto; }
+.outreach-table { width: 100%; border-collapse: collapse; text-align: left; }
+.outreach-table th { background: #f8fafc; padding: 1rem 1.5rem; font-size: 0.85rem; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
+.outreach-table td { padding: 1.25rem 1.5rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+.outreach-table tbody tr:hover { background: #f8fafc; }
+.outreach-table tbody tr:last-child td { border-bottom: none; }
+
+.candidate-info, .job-info { display: flex; flex-direction: column; gap: 0.2rem; }
+.candidate-info strong, .job-info strong { font-size: 0.95rem; color: #1e293b; font-weight: 600; }
+.candidate-info span, .job-info span { font-size: 0.85rem; color: #64748b; }
+
+.message-snippet { font-size: 0.9rem; color: #475569; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: help; }
+.date-col { font-size: 0.85rem; color: #64748b; white-space: nowrap; }
+
+.status-badge { font-size: 0.75rem; padding: 0.3rem 0.75rem; border-radius: 50px; font-weight: 600; white-space: nowrap; display: inline-block; }
+.status-sent { background: rgba(139,92,246,.1); color: #7c3aed; }
+.status-read { background: rgba(59,130,246,.1); color: #2563eb; }
+.status-responded { background: rgba(16,185,129,.1); color: #059669; }
+
+.empty-state { text-align: center; padding: 4rem 2rem; color: #94a3b8; }
+.empty-state .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
