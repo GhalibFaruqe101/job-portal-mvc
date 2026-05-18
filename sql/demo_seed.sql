@@ -43,8 +43,26 @@ INSERT IGNORE INTO `applications` (`id`, `job_id`, `seeker_id`, `cover_letter`, 
 (5, 5, 3, 'I design clean, accessible UX with Figma. Attached my portfolio.',                               'interview',   '2026-05-14 11:30:00'),
 (6, 1, 3, 'Strong backend developer looking for senior opportunities in a growing team.',                    'rejected',    '2026-05-15 16:00:00');
 
+-- ─── 5.5. Seekers and Seeker Profiles ────────────────────────
+-- Password for new seekers: seeker123
+INSERT IGNORE INTO `users` (`id`, `name`, `email`, `password_hash`, `phone`, `role`, `is_active`, `is_verified`, `created_at`) VALUES
+(13, 'John Doe',        'john@example.com',  '$2y$10$AgnIL3.Qr4m41nA4ZSWyUeASlrCMl0E5HcQpCPvVMmbf2dKZBWUxe', '01711111111', 'seeker', 1, 1, '2026-05-01 10:00:00'),
+(14, 'Sarah Connor',    'sarah@example.com', '$2y$10$AgnIL3.Qr4m41nA4ZSWyUeASlrCMl0E5HcQpCPvVMmbf2dKZBWUxe', '01722222222', 'seeker', 1, 1, '2026-05-02 10:00:00'),
+(15, 'Michael Scott',   'mike@example.com',  '$2y$10$AgnIL3.Qr4m41nA4ZSWyUeASlrCMl0E5HcQpCPvVMmbf2dKZBWUxe', '01733333333', 'seeker', 1, 1, '2026-05-03 10:00:00'),
+(16, 'Emily Chen',      'emily@example.com', '$2y$10$AgnIL3.Qr4m41nA4ZSWyUeASlrCMl0E5HcQpCPvVMmbf2dKZBWUxe', '01744444444', 'seeker', 1, 1, '2026-05-04 10:00:00'),
+(17, 'David Miller',    'david@example.com', '$2y$10$AgnIL3.Qr4m41nA4ZSWyUeASlrCMl0E5HcQpCPvVMmbf2dKZBWUxe', '01755555555', 'seeker', 1, 1, '2026-05-05 10:00:00');
+
+INSERT IGNORE INTO `seeker_profiles` (`user_id`, `headline`, `summary`, `skills`, `years_experience`, `education_level`, `expected_salary`, `preferred_location`) VALUES
+(2,  'Software Engineer',            'Passionate backend developer.',                         'PHP, Laravel, MySQL',           4, 'Bachelor', 80000, 'Dhaka'),
+(3,  'Frontend Developer',           'Creative UI/UX builder.',                               'React, CSS, JS, HTML',          2, 'Bachelor', 50000, 'Remote'),
+(13, 'Senior Full-Stack Developer',  'Experienced in scalable web applications.',             'PHP, Vue.js, AWS, Node.js',     6, 'Master',   120000, 'Dhaka'),
+(14, 'Data Analyst / Scientist',     'Solving business problems with data.',                  'Python, SQL, Power BI, Excel',  3, 'Bachelor', 60000, 'Chittagong'),
+(15, 'Digital Marketing Manager',    'Growing brands through data-driven campaigns.',         'SEO, SEM, Google Ads, Meta',    5, 'Master',   70000, 'Dhaka'),
+(16, 'UI/UX Designer',               'Designing human-centric digital experiences.',          'Figma, Adobe XD, Prototyping',  4, 'Bachelor', 55000, 'Remote'),
+(17, 'Junior Web Developer',         'Recent graduate eager to learn and grow.',              'HTML, CSS, JavaScript, PHP',    1, 'Bachelor', 30000, 'Dhaka');
+
 -- ─── 6. Fix AUTO_INCREMENT ───────────────────────────────────
-ALTER TABLE `users`             AUTO_INCREMENT = 20;
+ALTER TABLE `users`             AUTO_INCREMENT = 30;
 ALTER TABLE `employer_profiles` AUTO_INCREMENT = 10;
 ALTER TABLE `jobs`              AUTO_INCREMENT = 10;
 ALTER TABLE `applications`      AUTO_INCREMENT = 10;

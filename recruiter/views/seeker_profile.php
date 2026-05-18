@@ -37,19 +37,7 @@ $activeJobs = $jobModel->getRecruiterJobs($recruiter_id, '', 'active');
 </head>
 <body>
 
-<nav class="global-nav">
-    <a href="dashboard.php" class="logo">JobPortal <span style="font-size:0.8rem;color:#8b5cf6;">[Recruiter]</span></a>
-    <div class="nav-links">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="clients.php">Clients</a>
-        <a href="jobs.php">Jobs</a>
-        <a href="seekers.php">Seekers</a>
-        <a href="outreach.php">Outreach</a>
-        <a href="candidates.php">Candidates</a>
-        <a href="profile.php">Profile</a>
-        <a href="logout.php">Logout</a>
-    </div>
-</nav>
+<?php include 'partials/recruiter_nav.php'; ?>
 
 <main class="seekers-main">
     <div class="page-header">
@@ -200,3 +188,4 @@ document.getElementById('outreachForm').addEventListener('submit', function(e) {
 
 </body>
 </html>
+

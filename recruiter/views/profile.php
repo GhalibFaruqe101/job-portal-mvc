@@ -31,16 +31,7 @@ $avatar_src = !empty($profile['profile_pic'])
 </head>
 <body>
 
-    <nav class="global-nav">
-        <a href="dashboard.php" class="logo">JobPortal <span style="font-size:0.8rem;color:#8b5cf6;">[Recruiter]</span></a>
-        <div class="nav-links">
-            <a href="dashboard.php">Dashboard</a>
-            <a href="clients.php">Clients</a>
-            <a href="candidates.php">Candidates</a>
-            <a href="profile.php" class="active">Profile</a>
-            <a href="logout.php">Logout</a>
-        </div>
-    </nav>
+    <?php include 'partials/recruiter_nav.php'; ?>
 
     <main class="profile-main">
         <h1>My Profile</h1>
@@ -210,3 +201,4 @@ document.getElementById('profile_pic').addEventListener('change', function() {
 
 </body>
 </html>
+
