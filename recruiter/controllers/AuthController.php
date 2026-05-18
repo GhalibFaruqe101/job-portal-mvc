@@ -3,6 +3,7 @@
 session_start();
 require_once '../config/db.php';
 require_once '../models/UserModel.php';
+require_once '../helpers/session.php';
 
 $userModel = new UserModel($conn);
 $action = isset($_GET['action']) ? $_GET['action'] : '';
@@ -28,6 +29,13 @@ function handleLogin($userModel) {
         exit();
     }
 
+    // CSRF validation
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        $_SESSION['auth_errors'] = ["Invalid security token. Please try again."];
+        header("Location: ../views/login.php");
+        exit();
+    }
+
     $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $errors   = [];
@@ -45,6 +53,8 @@ function handleLogin($userModel) {
             } elseif (!$user['is_verified']) {
                 $errors[] = "Your account is pending admin approval. Please wait for verification.";
             } else {
+                // Regenerate session ID on login to prevent session fixation
+                session_regenerate_id(true);
                 // Mandatory session keys (team contract)
                 $_SESSION['user_id']   = $user['id'];
                 $_SESSION['role']      = 'recruiter';
@@ -65,6 +75,13 @@ function handleLogin($userModel) {
 
 function handleRegister($userModel) {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: ../views/register.php");
+        exit();
+    }
+
+    // CSRF validation
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        $_SESSION['auth_errors'] = ["Invalid security token. Please try again."];
         header("Location: ../views/register.php");
         exit();
     }
@@ -120,6 +137,14 @@ function handleRegister($userModel) {
 function handleLogout() {
     session_unset();
     session_destroy();
+    // Clear session cookie
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
+    }
     header("Location: ../views/login.php");
     exit();
 }
