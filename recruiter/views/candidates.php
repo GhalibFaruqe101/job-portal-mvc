@@ -23,6 +23,7 @@ $jobs         = $jobModel->getRecruiterJobs($recruiter_id);
 $candidates   = $model->getRecruiterCandidates($recruiter_id, $filter_job, $filter_status, $search);
 $statusCounts = $model->getStatusCounts($recruiter_id);
 $total        = array_sum($statusCounts);
+$csrf_token   = generateCsrfToken();
 
 $statusLabels = [
     'submitted'   => 'Submitted',
@@ -199,6 +200,7 @@ function updateStatus(selectEl) {
     const formData = new FormData();
     formData.append('application_id', appId);
     formData.append('status', newStatus);
+    formData.append('csrf_token', '<?php echo $csrf_token; ?>');
 
     fetch('../api/update_candidate_status.php', {
         method: 'POST',
@@ -209,12 +211,19 @@ function updateStatus(selectEl) {
         indicator.style.display = 'none';
         if (data.success) {
             // Update badge label + class live
-            const badgeClasses = 'status-badge badge-' + data.new_status;
             const statusLabels = {
                 submitted: 'Submitted', reviewed: 'Reviewed', shortlisted: 'Shortlisted',
                 interview: 'Interview', rejected: 'Rejected',  withdrawn: 'Withdrawn', hired: 'Hired'
             };
-            badge.innerHTML = `<span class="${badgeClasses}">${statusLabels[data.new_status] || data.new_status}</span>`;
+            const span = document.createElement('span');
+            span.className = 'status-badge badge-' + data.new_status;
+            if (statusLabels[data.new_status]) {
+                span.textContent = statusLabels[data.new_status];
+            } else {
+                span.textContent = data.new_status;
+            }
+            badge.textContent = '';
+            badge.appendChild(span);
         } else {
             alert('Update failed: ' + data.message);
             // Revert to previous value would require storing it — just notify user
