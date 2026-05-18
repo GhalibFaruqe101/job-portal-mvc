@@ -23,10 +23,10 @@
 
             <?php if (!empty($error)) echo "<p style='color:red;'>$error</p>"; ?>
 
-            <form method="POST" action="?action=register" enctype="multipart/form-data">
+            <form method="POST" action="?action=users" enctype="multipart/form-data">
                 <div class="form-group" style="margin-top: 1rem;">
-                    <label>Company Name *</label>
-                    <input type="text" name="company" class="form-control" placeholder="Enter company name" required>
+                    <label>Name (Company/Contact) *</label>
+                    <input type="text" name="name" class="form-control" placeholder="Enter your name" required>
                 </div>
                 
                 <div class="form-group" style="margin-top: 1rem;">
@@ -36,40 +36,15 @@
 
                 <div class="form-group" style="margin-top: 1rem;">
                     <label>Password *</label>
-                    <input type="password" name="password" class="form-control" placeholder="Create a password" required>
+                    <input type="password" name="password_hash" class="form-control" placeholder="Create a password" required>
                 </div>
 
                 <div class="form-group" style="margin-top: 1rem;">
-                    <label>Industry</label>
-                    <input type="text" name="industry" class="form-control" placeholder="e.g., Technology, Healthcare">
+                    <label>Phone Number</label>
+                    <input type="text" name="phone" class="form-control" placeholder="Enter phone number">
                 </div>
 
-                <div class="form-group" style="margin-top: 1rem;">
-                    <label>Company Size</label>
-                    <select name="size" class="form-control">
-                        <option value="">Select size</option>
-                        <option value="1-10">1-10 employees</option>
-                        <option value="11-50">11-50 employees</option>
-                        <option value="51-200">51-200 employees</option>
-                        <option value="201-500">201-500 employees</option>
-                        <option value="500+">500+ employees</option>
-                    </select>
-                </div>
-
-                <div class="form-group" style="margin-top: 1rem;">
-                    <label>Description</label>
-                    <textarea name="description" class="form-control" rows="4" placeholder="Briefly describe your company"></textarea>
-                </div>
-
-                <div class="form-group" style="margin-top: 1rem;">
-                    <label>Website</label>
-                    <input type="url" name="website" class="form-control" placeholder="https://example.com">
-                </div>
-
-                <div class="form-group" style="margin-top: 1rem;">
-                    <label>Address</label>
-                    <input type="text" name="address" class="form-control" placeholder="Company address">
-                </div>
+                <input type="hidden" name="role" value="employer">
 
                 <div style="margin-top: 2rem;">
                     <button type="submit" class="btn-primary" style="width: 100%;">Register Company</button>
