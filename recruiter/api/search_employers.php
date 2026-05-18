@@ -19,6 +19,12 @@ if (strlen($query) < 2) {
     exit();
 }
 
-$results = $model->searchEmployers($query);
-echo json_encode($results);
+try {
+    $results = $model->searchEmployers($query);
+    echo json_encode($results);
+} catch (Exception $e) {
+    error_log("searchEmployers error: " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(['error' => 'Internal server error']);
+}
 ?>
