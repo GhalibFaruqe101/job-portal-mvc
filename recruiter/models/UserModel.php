@@ -19,30 +19,44 @@ class UserModel {
     }
 
     /**
-     * Create a new recruiter user + blank recruiter profile
+     * Create a new recruiter user + blank recruiter profile (transactional)
      */
     public function createUser($name, $email, $phone, $password, $agency_name) {
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
         $role = 'recruiter';
 
-        // Insert into users table
-        $stmt = $this->conn->prepare(
-            "INSERT INTO users (name, email, phone, password_hash, role) VALUES (?, ?, ?, ?, ?)"
-        );
-        $stmt->bind_param("sssss", $name, $email, $phone, $password_hash, $role);
+        $this->conn->begin_transaction();
 
-        if (!$stmt->execute()) {
+        try {
+            // Insert into users table
+            $stmt = $this->conn->prepare(
+                "INSERT INTO users (name, email, phone, password_hash, role) VALUES (?, ?, ?, ?, ?)"
+            );
+            $stmt->bind_param("sssss", $name, $email, $phone, $password_hash, $role);
+
+            if (!$stmt->execute()) {
+                throw new Exception("User insert failed");
+            }
+
+            $user_id = $this->conn->insert_id;
+
+            // Create a blank recruiter profile
+            $stmt2 = $this->conn->prepare(
+                "INSERT INTO recruiter_profiles (user_id, agency_name) VALUES (?, ?)"
+            );
+            $stmt2->bind_param("is", $user_id, $agency_name);
+
+            if (!$stmt2->execute()) {
+                throw new Exception("Profile insert failed");
+            }
+
+            $this->conn->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->conn->rollback();
+            error_log("createUser transaction failed: " . $e->getMessage());
             return false;
         }
-
-        $user_id = $this->conn->insert_id;
-
-        // Create a blank recruiter profile
-        $stmt2 = $this->conn->prepare(
-            "INSERT INTO recruiter_profiles (user_id, agency_name) VALUES (?, ?)"
-        );
-        $stmt2->bind_param("is", $user_id, $agency_name);
-        return $stmt2->execute();
     }
 
     /**
