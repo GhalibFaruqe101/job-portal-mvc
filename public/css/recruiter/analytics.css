@@ -1,0 +1,59 @@
+/* /public/css/recruiter/analytics.css */
+
+body { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
+.global-nav .nav-links a.active { color: #8b5cf6; font-weight: 600; }
+.global-nav .nav-links a:hover  { color: #7c3aed; }
+
+.analytics-main { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; }
+
+.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+.page-header h1 { font-size: 1.75rem; font-weight: 700; color: #1e293b; margin-bottom: 0.25rem; }
+.page-header p  { color: #64748b; font-size: 0.95rem; }
+.header-actions { display: flex; gap: 0.75rem; }
+
+.btn-primary { padding: 0.6rem 1.25rem; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+.btn-primary:hover { background: linear-gradient(135deg, #6d28d9, #5b21b6); transform: translateY(-1px); }
+.btn-outline { padding: 0.6rem 1.25rem; background: #fff; color: #7c3aed; border: 1px solid #c4b5fd; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+.btn-outline:hover { background: #f5f3ff; border-color: #8b5cf6; }
+
+/* KPI Grid */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+.kpi-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 1.5rem; display: flex; align-items: center; gap: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: transform 0.2s; }
+.kpi-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+.kpi-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+.kpi-icon.blue { background: rgba(59,130,246,0.1); color: #3b82f6; }
+.kpi-icon.purple { background: rgba(139,92,246,0.1); color: #8b5cf6; }
+.kpi-icon.green { background: rgba(16,185,129,0.1); color: #10b981; }
+.kpi-icon.orange { background: rgba(249,115,22,0.1); color: #f97316; }
+.kpi-data h3 { font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 0.25rem; }
+.kpi-value { font-size: 1.75rem; font-weight: 700; color: #1e293b; }
+
+/* Analytics Card & Tables */
+.analytics-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; margin-bottom: 2rem; }
+.card-header { padding: 1.5rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
+.card-header h2 { font-size: 1.2rem; font-weight: 700; color: #1e293b; }
+.view-all { font-size: 0.9rem; color: #7c3aed; font-weight: 600; text-decoration: none; }
+.view-all:hover { color: #5b21b6; }
+
+.table-responsive { overflow-x: auto; }
+.analytics-table { width: 100%; border-collapse: collapse; }
+.analytics-table th { background: #f8fafc; padding: 1rem 1.5rem; text-align: left; font-size: 0.8rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; }
+.analytics-table td { padding: 1.25rem 1.5rem; border-bottom: 1px solid #f1f5f9; font-size: 0.95rem; color: #334155; vertical-align: middle; }
+.analytics-table tbody tr:hover { background: #f8fafc; }
+
+.text-muted { color: #94a3b8; font-size: 0.85rem; }
+.text-green { color: #10b981; }
+.font-bold { font-weight: 700; }
+
+.badge-success { background: rgba(16,185,129,0.1); color: #065f46; padding: 0.25rem 0.6rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; border: 1px solid rgba(16,185,129,0.3); }
+.client-badge { background: #f1f5f9; color: #475569; padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: 500; }
+
+.badge-linked { background: rgba(59,130,246,0.1); color: #1d4ed8; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; margin-left: 0.5rem; }
+.badge-standalone { background: rgba(245,158,11,0.1); color: #b45309; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; margin-left: 0.5rem; }
+
+/* Progress Bar */
+.progress-bar { width: 100px; height: 6px; background: #e2e8f0; border-radius: 50px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 0.5rem; }
+.progress-fill { height: 100%; background: #10b981; border-radius: 50px; transition: width 0.5s ease; }
+
+.empty-state { text-align: center; padding: 4rem 2rem; color: #94a3b8; }
+.empty-state .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
