@@ -12,7 +12,8 @@ if ($action === 'update_status' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $app_id = (int)($_POST['application_id'] ?? 0);
     $status = $_POST['status'] ?? '';
 
-    if ($app_id && $model->updateStatus($app_id, $status)) {
+    $recruiter_id = $_SESSION['user_id'];
+    if ($app_id && $model->updateStatus($app_id, $status, $recruiter_id)) {
         $_SESSION['candidate_success'] = "Candidate status updated successfully.";
     } else {
         $_SESSION['candidate_error'] = "Failed to update status.";
