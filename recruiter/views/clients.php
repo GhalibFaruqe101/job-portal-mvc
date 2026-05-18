@@ -29,16 +29,7 @@ $clients = $model->getMyClients($recruiter_id, $search);
 </head>
 <body>
 
-<nav class="global-nav">
-    <a href="dashboard.php" class="logo">JobPortal <span style="font-size:0.8rem;color:#8b5cf6;">[Recruiter]</span></a>
-    <div class="nav-links">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="clients.php" class="active">Clients</a>
-        <a href="candidates.php">Candidates</a>
-        <a href="profile.php">Profile</a>
-        <a href="logout.php">Logout</a>
-    </div>
-</nav>
+<?php include 'partials/recruiter_nav.php'; ?>
 
 <main class="clients-main">
     <div class="page-header">
@@ -264,3 +255,4 @@ function escapeHtml(text) {
 
 </body>
 </html>
+
