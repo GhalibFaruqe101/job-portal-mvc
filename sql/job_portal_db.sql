@@ -65,7 +65,7 @@ CREATE TABLE `applications` (
   `recruiter_id` int(11) DEFAULT NULL,
   `cover_letter` text DEFAULT NULL,
   `resume_path` varchar(255) DEFAULT NULL,
-  `status` enum('submitted','reviewed','shortlisted','interview','rejected','withdrawn') DEFAULT 'submitted',
+  `status` enum('submitted','reviewed','shortlisted','interview','rejected','withdrawn','hired') DEFAULT 'submitted',
   `applied_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -204,7 +204,7 @@ INSERT INTO `platform_policies` (`id`, `policy_key`, `policy_value`, `updated_at
 CREATE TABLE `recruiter_clients` (
   `id` int(11) NOT NULL,
   `recruiter_id` int(11) NOT NULL,
-  `employer_id` int(11) NOT NULL,
+  `employer_id` int(11) DEFAULT NULL,
   `company_name_override` varchar(150) DEFAULT NULL,
   `added_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -299,7 +299,15 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `phone`, `role`, `profile_pic`, `is_active`, `is_verified`, `created_at`) VALUES
 (2, 'Jannatul Sadia', 'jannatulsadia0@gmail.com', '$2y$10$AgnIL3.Qr4m41nA4ZSWyUeASlrCMl0E5HcQpCPvVMmbf2dKZBWUxe', '01705899745', 'seeker', 'assets/uploads/profile_pics/pic_2_1778490528.jpg', 1, 0, '2026-05-11 06:59:51'),
 (3, 'Shaikh Sameer', 'shaikhsamir372@gmail.com', '$2y$10$Y8yKmAEh8/TdqS8vcvcMcuNb0M1PdajzAv.zZsDUoX/4a3/FBpQfa', '01640037096', 'seeker', NULL, 1, 0, '2026-05-14 17:55:13'),
-(4, 'System Admin', 'admin@jobportal.test', '$2y$10$hIu55Ys/uVoAi7nC8EE0L.mMBmJiaGSW8E5kEdCtg7WcgKdGsK7au', '01000000000', 'admin', NULL, 1, 1, '2026-05-14 23:56:08');
+(4, 'System Admin', 'admin@jobportal.test', '$2y$10$hIu55Ys/uVoAi7nC8EE0L.mMBmJiaGSW8E5kEdCtg7WcgKdGsK7au', '01000000000', 'admin', NULL, 1, 1, '2026-05-14 23:56:08'),
+(5, 'Test Recruiter', 'recruiter@jobportal.test', '$2y$10$AgnIL3.Qr4m41nA4ZSWyUeASlrCMl0E5HcQpCPvVMmbf2dKZBWUxe', '01800000001', 'recruiter', NULL, 1, 1, '2026-05-15 10:00:00');
+
+--
+-- Dumping data for table `recruiter_profiles`
+--
+
+INSERT INTO `recruiter_profiles` (`id`, `user_id`, `agency_name`, `specialization`, `description`, `website`) VALUES
+(1, 5, 'TalentBridge Agency', 'Technology', 'Full-service tech recruitment agency specializing in software engineering and data roles.', 'https://talentbridge.test');
 
 --
 -- Indexes for dumped tables
@@ -508,7 +516,7 @@ ALTER TABLE `recruiter_outreach`
 -- AUTO_INCREMENT for table `recruiter_profiles`
 --
 ALTER TABLE `recruiter_profiles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `saved_jobs`
@@ -526,7 +534,7 @@ ALTER TABLE `seeker_profiles`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
@@ -593,7 +601,7 @@ ALTER TABLE `messages`
 --
 ALTER TABLE `recruiter_clients`
   ADD CONSTRAINT `recruiter_clients_ibfk_1` FOREIGN KEY (`recruiter_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `recruiter_clients_ibfk_2` FOREIGN KEY (`employer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `recruiter_clients_ibfk_2` FOREIGN KEY (`employer_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `recruiter_outreach`
