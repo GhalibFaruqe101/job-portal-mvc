@@ -31,25 +31,14 @@ $activeJobs = $jobModel->getRecruiterJobs($recruiter_id, '', 'active');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($seeker['name']); ?> - Candidate Profile</title>
     <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="../../public/css/recruiter/recruiter_base.css">
     <link rel="stylesheet" href="../../public/css/recruiter/dashboard.css">
     <link rel="stylesheet" href="../../public/css/recruiter/seekers.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<nav class="global-nav">
-    <a href="dashboard.php" class="logo">JobPortal <span style="font-size:0.8rem;color:#8b5cf6;">[Recruiter]</span></a>
-    <div class="nav-links">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="clients.php">Clients</a>
-        <a href="jobs.php">Jobs</a>
-        <a href="seekers.php">Seekers</a>
-        <a href="outreach.php">Outreach</a>
-        <a href="candidates.php">Candidates</a>
-        <a href="profile.php">Profile</a>
-        <a href="logout.php">Logout</a>
-    </div>
-</nav>
+<?php include 'partials/recruiter_nav.php'; ?>
 
 <main class="seekers-main">
     <div class="page-header">
@@ -168,6 +157,7 @@ document.getElementById('outreachForm').addEventListener('submit', function(e) {
     formData.append('seeker_id', seekerId);
     formData.append('job_id', jobId);
     formData.append('message', message);
+    formData.append('csrf_token', '<?php echo generateCsrfToken(); ?>');
 
     fetch('../api/send_outreach.php', {
         method: 'POST',
@@ -199,3 +189,5 @@ document.getElementById('outreachForm').addEventListener('submit', function(e) {
 
 </body>
 </html>
+
+

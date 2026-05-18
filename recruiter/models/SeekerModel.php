@@ -21,8 +21,9 @@ class SeekerModel {
         $types  = '';
 
         if (!empty($keyword)) {
-            $sql .= " AND (sp.skills LIKE ? OR sp.headline LIKE ? OR u.name LIKE ?)";
-            $like = '%' . $keyword . '%';
+            $sql .= " AND (sp.skills LIKE ? ESCAPE '\\' OR sp.headline LIKE ? ESCAPE '\\' OR u.name LIKE ? ESCAPE '\\')";
+            $keywordEscaped = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $keyword);
+            $like = '%' . $keywordEscaped . '%';
             $params[] = $like;
             $params[] = $like;
             $params[] = $like;
@@ -36,8 +37,9 @@ class SeekerModel {
         }
 
         if (!empty($location)) {
-            $sql .= " AND sp.preferred_location LIKE ?";
-            $params[] = '%' . $location . '%';
+            $sql .= " AND sp.preferred_location LIKE ? ESCAPE '\\'";
+            $locEscaped = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $location);
+            $params[] = '%' . $locEscaped . '%';
             $types .= 's';
         }
 
@@ -68,7 +70,7 @@ class SeekerModel {
                     sp.headline, sp.summary, sp.skills, sp.years_experience, 
                     sp.education_level, sp.expected_salary, sp.preferred_location, sp.resume_path
              FROM users u
-             LEFT JOIN seeker_profiles sp ON u.id = sp.user_id
+             INNER JOIN seeker_profiles sp ON u.id = sp.user_id
              WHERE u.id = ? AND u.role = 'seeker'"
         );
         $stmt->bind_param("i", $seeker_id);

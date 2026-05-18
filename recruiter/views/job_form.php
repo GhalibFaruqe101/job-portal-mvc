@@ -49,23 +49,14 @@ $statuses  = ['active' => 'Active', 'draft' => 'Draft', 'closed' => 'Closed'];
     <title><?php echo $isEdit ? 'Edit Job' : 'Post New Job'; ?> - JobPortal Recruiter</title>
     <meta name="description" content="<?php echo $isEdit ? 'Edit a job posting.' : 'Create a new job posting for a client.'; ?>">
     <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="../../public/css/recruiter/recruiter_base.css">
     <link rel="stylesheet" href="../../public/css/recruiter/dashboard.css">
     <link rel="stylesheet" href="../../public/css/recruiter/jobs.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<nav class="global-nav">
-    <a href="dashboard.php" class="logo">JobPortal <span style="font-size:0.8rem;color:#8b5cf6;">[Recruiter]</span></a>
-    <div class="nav-links">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="clients.php">Clients</a>
-        <a href="jobs.php" class="active">Jobs</a>
-        <a href="candidates.php">Candidates</a>
-        <a href="profile.php">Profile</a>
-        <a href="logout.php">Logout</a>
-    </div>
-</nav>
+<?php include 'partials/recruiter_nav.php'; ?>
 
 <main class="jobs-main">
     <div class="page-header">
@@ -249,3 +240,5 @@ document.addEventListener("DOMContentLoaded", function() {
 
 </body>
 </html>
+
+

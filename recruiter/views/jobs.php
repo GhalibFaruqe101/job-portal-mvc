@@ -35,23 +35,14 @@ $expLevels    = ['entry' => 'Entry', 'mid' => 'Mid', 'senior' => 'Senior'];
     <title>Jobs - JobPortal Recruiter</title>
     <meta name="description" content="Manage job postings for your clients.">
     <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="../../public/css/recruiter/recruiter_base.css">
     <link rel="stylesheet" href="../../public/css/recruiter/dashboard.css">
     <link rel="stylesheet" href="../../public/css/recruiter/jobs.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<nav class="global-nav">
-    <a href="dashboard.php" class="logo">JobPortal <span style="font-size:0.8rem;color:#8b5cf6;">[Recruiter]</span></a>
-    <div class="nav-links">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="clients.php">Clients</a>
-        <a href="jobs.php" class="active">Jobs</a>
-        <a href="candidates.php">Candidates</a>
-        <a href="profile.php">Profile</a>
-        <a href="logout.php">Logout</a>
-    </div>
-</nav>
+<?php include 'partials/recruiter_nav.php'; ?>
 
 <main class="jobs-main">
     <div class="page-header">
@@ -111,16 +102,16 @@ $expLevels    = ['entry' => 'Entry', 'mid' => 'Mid', 'senior' => 'Senior'];
                             <h2><?php echo htmlspecialchars($j['title']); ?></h2>
                             <p class="job-client">🏢 <?php echo htmlspecialchars($j['client_name']); ?></p>
                         </div>
-                        <span class="status-badge status-<?php echo $j['status']; ?>">
-                            <?php echo $statusLabels[$j['status']] ?? ucfirst($j['status']); ?>
+                        <span class="status-badge status-<?php echo htmlspecialchars($j['status'], ENT_QUOTES, 'UTF-8'); ?>">
+                            <?php echo htmlspecialchars($statusLabels[$j['status']] ?? ucfirst($j['status']), ENT_QUOTES, 'UTF-8'); ?>
                         </span>
                     </div>
                     <div class="job-meta">
                         <?php if ($j['location']): ?>
                             <span>📍 <?php echo htmlspecialchars($j['location']); ?></span>
                         <?php endif; ?>
-                        <span>💼 <?php echo $jobTypes[$j['job_type']] ?? $j['job_type']; ?></span>
-                        <span>📊 <?php echo $expLevels[$j['experience_level']] ?? $j['experience_level']; ?></span>
+                        <span>💼 <?php echo $jobTypes[$j['job_type']] ?? htmlspecialchars($j['job_type'], ENT_QUOTES, 'UTF-8'); ?></span>
+                        <span>📊 <?php echo $expLevels[$j['experience_level']] ?? htmlspecialchars($j['experience_level'], ENT_QUOTES, 'UTF-8'); ?></span>
                         <?php if ($j['category_name']): ?>
                             <span>🏷️ <?php echo htmlspecialchars($j['category_name']); ?></span>
                         <?php endif; ?>
@@ -154,3 +145,5 @@ $expLevels    = ['entry' => 'Entry', 'mid' => 'Mid', 'senior' => 'Senior'];
 
 </body>
 </html>
+
+

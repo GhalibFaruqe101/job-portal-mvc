@@ -25,7 +25,7 @@ class ClientModel {
                     u.email,
                     u.phone,
                     (SELECT COUNT(*) FROM jobs j WHERE j.recruiter_id = rc.recruiter_id 
-                        AND (j.employer_id = rc.employer_id OR rc.employer_id IS NULL) 
+                        AND j.employer_id = COALESCE(rc.employer_id, rc.recruiter_id)
                         AND j.status = 'active') AS active_jobs,
                     CASE WHEN rc.employer_id IS NOT NULL THEN 'linked' ELSE 'standalone' END AS client_type
                 FROM recruiter_clients rc

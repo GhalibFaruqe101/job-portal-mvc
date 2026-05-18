@@ -25,22 +25,14 @@ $avatar_src = !empty($profile['profile_pic'])
     <title>My Profile - JobPortal Recruiter</title>
     <meta name="description" content="View and edit your Recruiter profile on JobPortal.">
     <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="../../public/css/recruiter/recruiter_base.css">
     <link rel="stylesheet" href="../../public/css/recruiter/dashboard.css">
     <link rel="stylesheet" href="../../public/css/recruiter/profile.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <nav class="global-nav">
-        <a href="dashboard.php" class="logo">JobPortal <span style="font-size:0.8rem;color:#8b5cf6;">[Recruiter]</span></a>
-        <div class="nav-links">
-            <a href="dashboard.php">Dashboard</a>
-            <a href="clients.php">Clients</a>
-            <a href="candidates.php">Candidates</a>
-            <a href="profile.php" class="active">Profile</a>
-            <a href="logout.php">Logout</a>
-        </div>
-    </nav>
+    <?php include 'partials/recruiter_nav.php'; ?>
 
     <main class="profile-main">
         <h1>My Profile</h1>
@@ -64,15 +56,15 @@ $avatar_src = !empty($profile['profile_pic'])
             <!-- Avatar Banner -->
             <div class="profile-avatar-section">
                 <form id="picForm" action="../controllers/ProfileController.php?action=update" method="POST" enctype="multipart/form-data">
+                    <?php echo csrfInput(); ?>
                     <div class="avatar-wrapper">
                         <?php if ($avatar_src): ?>
-                            <img src="<?php echo $avatar_src; ?>" alt="Profile Picture" class="avatar-img">
+                            <img src="<?php echo $avatar_src; ?>" alt="Profile Picture" class="avatar-img" id="avatarPreview">
                         <?php else: ?>
-                            <div class="avatar-img">🎯</div>
+                            <div class="avatar-img" id="avatarPreview">🎯</div>
                         <?php endif; ?>
                         <label class="avatar-upload-label" for="profile_pic" title="Change photo">✏️</label>
-                        <input type="file" id="profile_pic" name="profile_pic" accept="image/*"
-                               onchange="document.getElementById('picForm').submit()">
+                        <input type="file" id="profile_pic" name="profile_pic" accept="image/*">
                         <!-- Hidden fields required by controller -->
                         <input type="hidden" name="name"           value="<?php echo htmlspecialchars($profile['name'] ?? ''); ?>">
                         <input type="hidden" name="phone"          value="<?php echo htmlspecialchars($profile['phone'] ?? ''); ?>">
@@ -81,6 +73,7 @@ $avatar_src = !empty($profile['profile_pic'])
                         <input type="hidden" name="description"    value="<?php echo htmlspecialchars($profile['description'] ?? ''); ?>">
                         <input type="hidden" name="website"        value="<?php echo htmlspecialchars($profile['website'] ?? ''); ?>">
                     </div>
+                    <button type="submit" id="uploadConfirmBtn" class="btn-save" style="display:none; margin-top:0.5rem; font-size:0.85rem; padding:0.4rem 1rem;">Upload Photo</button>
                 </form>
                 <div class="avatar-info">
                     <h2><?php echo htmlspecialchars($profile['name'] ?? 'Recruiter'); ?></h2>
@@ -96,6 +89,7 @@ $avatar_src = !empty($profile['profile_pic'])
             <!-- Edit Form -->
             <div class="profile-form-section">
                 <form action="../controllers/ProfileController.php?action=update" method="POST" enctype="multipart/form-data">
+                    <?php echo csrfInput(); ?>
 
                     <!-- Personal Info -->
                     <div class="form-section-title">Personal Information</div>
@@ -161,5 +155,52 @@ $avatar_src = !empty($profile['profile_pic'])
         </div>
     </main>
 
+<script>
+document.getElementById('profile_pic').addEventListener('change', function() {
+    const file = this.files[0];
+    const btn = document.getElementById('uploadConfirmBtn');
+    if (!file) { btn.style.display = 'none'; return; }
+
+    // Validate type
+    const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowed.includes(file.type)) {
+        alert('Only JPG, PNG, GIF, or WEBP images are allowed.');
+        this.value = '';
+        btn.style.display = 'none';
+        return;
+    }
+    // Validate size (2MB)
+    if (file.size > 2 * 1024 * 1024) {
+        alert('Profile picture must be under 2MB.');
+        this.value = '';
+        btn.style.display = 'none';
+        return;
+    }
+
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const preview = document.getElementById('avatarPreview');
+        if (preview.tagName === 'IMG') {
+            preview.src = e.target.result;
+        } else {
+            // Replace div with img
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = 'Profile Picture';
+            img.className = 'avatar-img';
+            img.id = 'avatarPreview';
+            preview.parentNode.replaceChild(img, preview);
+        }
+    };
+    reader.readAsDataURL(file);
+
+    // Show confirm button
+    btn.style.display = 'inline-block';
+});
+</script>
+
 </body>
 </html>
+
+

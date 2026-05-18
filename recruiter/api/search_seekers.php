@@ -12,9 +12,17 @@ header('Content-Type: application/json');
 $model = new SeekerModel($conn);
 
 $keyword    = trim($_GET['keyword'] ?? '');
-$exp_min    = $_GET['exp_min'] ?? '';
+$exp_min    = ($_GET['exp_min'] ?? '');
 $location   = trim($_GET['location'] ?? '');
-$salary_max = $_GET['salary_max'] ?? '';
+$salary_max = ($_GET['salary_max'] ?? '');
+
+// Validate numeric inputs — reject non-numeric to avoid silent cast to 0
+if ($exp_min !== '' && !is_numeric($exp_min)) {
+    $exp_min = '';
+}
+if ($salary_max !== '' && !is_numeric($salary_max)) {
+    $salary_max = '';
+}
 
 // If nothing searched, return empty
 if ($keyword === '' && $exp_min === '' && $location === '' && $salary_max === '') {

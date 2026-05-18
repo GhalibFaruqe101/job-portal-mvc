@@ -9,14 +9,21 @@ $profileModel = new ProfileModel($conn);
 $action = $_GET['action'] ?? 'update';
 
 if ($action === 'update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $user_id      = $_SESSION['user_id'];
-    $name         = trim($_POST['name'] ?? '');
-    $phone        = trim($_POST['phone'] ?? '');
-    $agency_name  = trim($_POST['agency_name'] ?? '');
+    // CSRF validation
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        $_SESSION['profile_errors'] = ["Invalid security token. Please try again."];
+        header("Location: ../views/profile.php");
+        exit();
+    }
+
+    $user_id = $_SESSION['user_id'];
+    $name = trim($_POST['name'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $agency_name = trim($_POST['agency_name'] ?? '');
     $specialization = trim($_POST['specialization'] ?? '');
-    $description  = trim($_POST['description'] ?? '');
-    $website      = trim($_POST['website'] ?? '');
-    $errors       = [];
+    $description = trim($_POST['description'] ?? '');
+    $website = trim($_POST['website'] ?? '');
+    $errors = [];
 
     if (empty($name) || empty($agency_name)) {
         $errors[] = "Full name and agency name are required.";
@@ -39,8 +46,12 @@ if ($action === 'update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $ext = pathinfo($_FILES['profile_pic']['name'], PATHINFO_EXTENSION);
             $filename = 'recruiter_' . $user_id . '_' . time() . '.' . $ext;
-            move_uploaded_file($_FILES['profile_pic']['tmp_name'], $upload_dir . $filename);
-            $pic_path = 'uploads/profile_pics/' . $filename;
+            if (move_uploaded_file($_FILES['profile_pic']['tmp_name'], $upload_dir . $filename)) {
+                $pic_path = 'uploads/profile_pics/' . $filename;
+            } else {
+                error_log("move_uploaded_file failed for user $user_id");
+                $errors[] = "Failed to upload profile picture. Please try again.";
+            }
         }
     }
 

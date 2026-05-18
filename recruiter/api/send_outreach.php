@@ -14,6 +14,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
+// CSRF validation
+if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'error' => 'Invalid security token. Please refresh and try again.']);
+    exit();
+}
+
 $recruiter_id = $_SESSION['user_id'];
 $seeker_id    = (int)($_POST['seeker_id'] ?? 0);
 $job_id       = (int)($_POST['job_id'] ?? 0);

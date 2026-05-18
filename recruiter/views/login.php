@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once '../helpers/session.php';
 $errors    = $_SESSION['auth_errors'] ?? [];
 $success   = $_SESSION['auth_success'] ?? '';
 $old_email = $_SESSION['old_email'] ?? '';
@@ -13,6 +13,7 @@ unset($_SESSION['auth_errors'], $_SESSION['auth_success'], $_SESSION['old_email'
     <title>Recruiter Login - JobPortal</title>
     <meta name="description" content="Log in to your Recruiter account on JobPortal to manage candidates and job placements.">
     <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="../../public/css/recruiter/recruiter_base.css">
     <link rel="stylesheet" href="../../public/css/recruiter/auth.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -92,6 +93,7 @@ unset($_SESSION['auth_errors'], $_SESSION['auth_success'], $_SESSION['old_email'
         <?php endif; ?>
 
         <form class="auth-form" action="../controllers/AuthController.php?action=login" method="POST">
+            <?php echo csrfInput(); ?>
             <div class="form-group">
                 <label for="email">Email Address</label>
                 <input type="email" id="email" name="email" class="form-control"
@@ -122,3 +124,4 @@ unset($_SESSION['auth_errors'], $_SESSION['auth_success'], $_SESSION['old_email'
 
 </body>
 </html>
+

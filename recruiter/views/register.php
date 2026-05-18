@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once '../helpers/session.php';
 $errors     = $_SESSION['auth_errors'] ?? [];
 $old_name   = $_SESSION['old_name'] ?? '';
 $old_email  = $_SESSION['old_email'] ?? '';
@@ -16,6 +16,7 @@ unset($_SESSION['auth_errors'], $_SESSION['old_name'], $_SESSION['old_email'],
     <title>Create Recruiter Account - JobPortal</title>
     <meta name="description" content="Register as a Recruiter on JobPortal to start sourcing and placing top talent.">
     <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="../../public/css/recruiter/recruiter_base.css">
     <link rel="stylesheet" href="../../public/css/recruiter/auth.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -45,6 +46,7 @@ unset($_SESSION['auth_errors'], $_SESSION['old_name'], $_SESSION['old_email'],
         <?php endif; ?>
 
         <form id="registerForm" class="auth-form" action="../controllers/AuthController.php?action=register" method="POST">
+            <?php echo csrfInput(); ?>
             <div class="form-group">
                 <label for="name">Full Name</label>
                 <input type="text" id="name" name="name" class="form-control"
@@ -131,3 +133,4 @@ unset($_SESSION['auth_errors'], $_SESSION['old_name'], $_SESSION['old_email'],
 
 </body>
 </html>
+

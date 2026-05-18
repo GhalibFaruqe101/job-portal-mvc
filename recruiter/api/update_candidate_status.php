@@ -1,7 +1,7 @@
 <?php
 /**
  * AJAX endpoint: update application status
- * Expects POST: application_id, status
+ * Expects POST: application_id, status, csrf_token
  * Returns JSON
  */
 require_once '../helpers/session.php';
@@ -9,10 +9,17 @@ require_role('recruiter');
 require_once '../config/db.php';
 require_once '../models/CandidateModel.php';
 
-header('Content-Type: application/json');   
+header('Content-Type: application/json');
 
-$model  = new CandidateModel($conn);
-$app_id = (int)($_POST['application_id'] ?? 0);
+// CSRF validation
+if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Invalid security token.']);
+    exit();
+}
+
+$model = new CandidateModel($conn);
+$app_id = (int) ($_POST['application_id'] ?? 0);
 $status = $_POST['status'] ?? '';
 
 if (!$app_id || !$status) {

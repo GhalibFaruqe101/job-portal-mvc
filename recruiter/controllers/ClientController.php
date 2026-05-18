@@ -32,6 +32,12 @@ function handleAddLinked($model) {
         exit();
     }
 
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        $_SESSION['client_error'] = "Invalid security token.";
+        header("Location: ../views/clients.php");
+        exit();
+    }
+
     $recruiter_id = $_SESSION['user_id'];
     $employer_id  = (int)($_POST['employer_id'] ?? 0);
 
@@ -61,6 +67,12 @@ function handleAddStandalone($model) {
         exit();
     }
 
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        $_SESSION['client_error'] = "Invalid security token.";
+        header("Location: ../views/clients.php");
+        exit();
+    }
+
     $recruiter_id = $_SESSION['user_id'];
     $company_name = trim($_POST['company_name'] ?? '');
 
@@ -86,6 +98,12 @@ function handleAddStandalone($model) {
  */
 function handleRemove($model) {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: ../views/clients.php");
+        exit();
+    }
+
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        $_SESSION['client_error'] = "Invalid security token.";
         header("Location: ../views/clients.php");
         exit();
     }

@@ -23,6 +23,7 @@ $jobs         = $jobModel->getRecruiterJobs($recruiter_id);
 $candidates   = $model->getRecruiterCandidates($recruiter_id, $filter_job, $filter_status, $search);
 $statusCounts = $model->getStatusCounts($recruiter_id);
 $total        = array_sum($statusCounts);
+$csrf_token   = generateCsrfToken();
 
 $statusLabels = [
     'submitted'   => 'Submitted',
@@ -42,25 +43,14 @@ $statusLabels = [
     <title>Candidates - JobPortal Recruiter</title>
     <meta name="description" content="Manage your talent pipeline and candidate applications.">
     <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="../../public/css/recruiter/recruiter_base.css">
     <link rel="stylesheet" href="../../public/css/recruiter/dashboard.css">
     <link rel="stylesheet" href="../../public/css/recruiter/candidates.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<nav class="global-nav">
-    <a href="dashboard.php" class="logo">JobPortal <span style="font-size:0.8rem;color:#8b5cf6;">[Recruiter]</span></a>
-    <div class="nav-links">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="clients.php">Clients</a>
-        <a href="jobs.php">Jobs</a>
-        <a href="seekers.php">Seekers</a>
-        <a href="outreach.php">Outreach</a>
-        <a href="candidates.php" class="active">Candidates</a>
-        <a href="profile.php">Profile</a>
-        <a href="logout.php">Logout</a>
-    </div>
-</nav>
+<?php include 'partials/recruiter_nav.php'; ?>
 
 <main class="candidates-main">
 
@@ -199,6 +189,7 @@ function updateStatus(selectEl) {
     const formData = new FormData();
     formData.append('application_id', appId);
     formData.append('status', newStatus);
+    formData.append('csrf_token', '<?php echo $csrf_token; ?>');
 
     fetch('../api/update_candidate_status.php', {
         method: 'POST',
@@ -209,12 +200,19 @@ function updateStatus(selectEl) {
         indicator.style.display = 'none';
         if (data.success) {
             // Update badge label + class live
-            const badgeClasses = 'status-badge badge-' + data.new_status;
             const statusLabels = {
                 submitted: 'Submitted', reviewed: 'Reviewed', shortlisted: 'Shortlisted',
                 interview: 'Interview', rejected: 'Rejected',  withdrawn: 'Withdrawn', hired: 'Hired'
             };
-            badge.innerHTML = `<span class="${badgeClasses}">${statusLabels[data.new_status] || data.new_status}</span>`;
+            const span = document.createElement('span');
+            span.className = 'status-badge badge-' + data.new_status;
+            if (statusLabels[data.new_status]) {
+                span.textContent = statusLabels[data.new_status];
+            } else {
+                span.textContent = data.new_status;
+            }
+            badge.textContent = '';
+            badge.appendChild(span);
         } else {
             alert('Update failed: ' + data.message);
             // Revert to previous value would require storing it — just notify user
@@ -229,3 +227,5 @@ function updateStatus(selectEl) {
 
 </body>
 </html>
+
+

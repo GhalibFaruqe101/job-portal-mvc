@@ -9,25 +9,14 @@ require_role('recruiter');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Seekers - JobPortal Recruiter</title>
     <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="../../public/css/recruiter/recruiter_base.css">
     <link rel="stylesheet" href="../../public/css/recruiter/dashboard.css">
     <link rel="stylesheet" href="../../public/css/recruiter/seekers.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<nav class="global-nav">
-    <a href="dashboard.php" class="logo">JobPortal <span style="font-size:0.8rem;color:#8b5cf6;">[Recruiter]</span></a>
-    <div class="nav-links">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="clients.php">Clients</a>
-        <a href="jobs.php">Jobs</a>
-        <a href="seekers.php" class="active">Seekers</a>
-        <a href="outreach.php">Outreach</a>
-        <a href="candidates.php">Candidates</a>
-        <a href="profile.php">Profile</a>
-        <a href="logout.php">Logout</a>
-    </div>
-</nav>
+<?php include 'partials/recruiter_nav.php'; ?>
 
 <main class="seekers-main">
     <div class="page-header">
@@ -107,25 +96,34 @@ document.getElementById('seekerSearchForm').addEventListener('submit', function(
                 return;
             }
 
+            const escapeHtml = (unsafe) => {
+                return (unsafe || '').toString()
+                     .replace(/&/g, "&amp;")
+                     .replace(/</g, "&lt;")
+                     .replace(/>/g, "&gt;")
+                     .replace(/"/g, "&quot;")
+                     .replace(/'/g, "&#039;");
+            };
+
             resultsGrid.innerHTML = data.map(s => `
                 <div class="seeker-card">
                     <div class="seeker-header">
-                        <div class="seeker-avatar">${s.name.charAt(0).toUpperCase()}</div>
+                        <div class="seeker-avatar">${escapeHtml(s.name.charAt(0).toUpperCase())}</div>
                         <div class="seeker-title">
-                            <h2>${s.name}</h2>
-                            <p>${s.headline}</p>
+                            <h2>${escapeHtml(s.name)}</h2>
+                            <p>${escapeHtml(s.headline)}</p>
                         </div>
                     </div>
                     <div class="seeker-meta">
-                        <span>📍 ${s.preferred_location}</span>
-                        <span>📊 ${s.years_experience} yrs exp</span>
-                        <span>💰 ৳${s.expected_salary}</span>
+                        <span>📍 ${escapeHtml(s.preferred_location)}</span>
+                        <span>📊 ${escapeHtml(s.years_experience)} yrs exp</span>
+                        <span>💰 ৳${escapeHtml(s.expected_salary)}</span>
                     </div>
                     <div class="seeker-skills">
-                        ${s.skills.split(',').map(skill => `<span class="skill-tag">${skill.trim()}</span>`).join('')}
+                        ${(s.skills || '').split(',').map(skill => skill.trim() ? `<span class="skill-tag">${escapeHtml(skill.trim())}</span>` : '').join('')}
                     </div>
                     <div class="seeker-actions">
-                        <a href="seeker_profile.php?id=${s.id}" class="btn-view-profile">View Profile</a>
+                        <a href="seeker_profile.php?id=${encodeURIComponent(s.seeker_id)}" class="btn-view-profile">View Profile</a>
                     </div>
                 </div>
             `).join('');
@@ -139,3 +137,5 @@ document.getElementById('seekerSearchForm').addEventListener('submit', function(
 
 </body>
 </html>
+
+

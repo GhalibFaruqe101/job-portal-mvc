@@ -25,25 +25,14 @@ $statusLabels = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Outreach - JobPortal Recruiter</title>
     <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="../../public/css/recruiter/recruiter_base.css">
     <link rel="stylesheet" href="../../public/css/recruiter/dashboard.css">
     <link rel="stylesheet" href="../../public/css/recruiter/outreach.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<nav class="global-nav">
-    <a href="dashboard.php" class="logo">JobPortal <span style="font-size:0.8rem;color:#8b5cf6;">[Recruiter]</span></a>
-    <div class="nav-links">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="clients.php">Clients</a>
-        <a href="jobs.php">Jobs</a>
-        <a href="seekers.php">Seekers</a>
-        <a href="outreach.php" class="active">Outreach</a>
-        <a href="candidates.php">Candidates</a>
-        <a href="profile.php">Profile</a>
-        <a href="logout.php">Logout</a>
-    </div>
-</nav>
+<?php include 'partials/recruiter_nav.php'; ?>
 
 <main class="outreach-main">
     <div class="page-header">
@@ -119,7 +108,7 @@ $statusLabels = [
                                 <td>
                                     <div class="message-snippet" title="<?php echo htmlspecialchars($m['message']); ?>">
                                         <?php 
-                                            $snippet = strlen($m['message']) > 50 ? substr($m['message'], 0, 50) . '...' : $m['message'];
+                                            $snippet = mb_strlen($m['message'], 'UTF-8') > 50 ? mb_substr($m['message'], 0, 50, 'UTF-8') . '...' : $m['message'];
                                             echo htmlspecialchars($snippet);
                                         ?>
                                     </div>
@@ -128,7 +117,7 @@ $statusLabels = [
                                     <?php echo date('d M Y, h:i A', strtotime($m['sent_at'])); ?>
                                 </td>
                                 <td>
-                                    <span class="status-badge status-<?php echo $m['status']; ?>">
+                                    <span class="status-badge status-<?php echo htmlspecialchars($m['status'], ENT_QUOTES, 'UTF-8'); ?>">
                                         <?php echo $statusLabels[$m['status']] ?? ucfirst($m['status']); ?>
                                     </span>
                                 </td>
@@ -143,3 +132,5 @@ $statusLabels = [
 
 </body>
 </html>
+
+
