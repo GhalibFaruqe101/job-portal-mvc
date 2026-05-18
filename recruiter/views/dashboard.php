@@ -29,20 +29,7 @@ $recentActivities = $candModel->getRecruiterCandidates($recruiter_id, '', '', ''
 </head>
 <body>
 
-    <nav class="global-nav">
-        <a href="dashboard.php" class="logo">JobPortal <span style="font-size: 0.8rem; color: #8b5cf6;">[Recruiter]</span></a>
-        <div class="nav-links">
-            <a href="dashboard.php" class="active">Dashboard</a>
-            <a href="clients.php">Clients</a>
-            <a href="jobs.php">Jobs</a>
-            <a href="seekers.php">Seekers</a>
-            <a href="outreach.php">Outreach</a>
-            <a href="candidates.php">Candidates</a>
-            <a href="analytics.php">Analytics</a>
-            <a href="profile.php">Profile</a>
-            <a href="logout.php">Logout</a>
-        </div>
-    </nav>
+    <?php include 'partials/recruiter_nav.php'; ?>
 
     <main class="dashboard-main">
         <header class="dashboard-header">
@@ -136,3 +123,4 @@ $recentActivities = $candModel->getRecruiterCandidates($recruiter_id, '', '', ''
 
 </body>
 </html>
+
