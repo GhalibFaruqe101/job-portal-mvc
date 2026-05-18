@@ -1,6 +1,5 @@
 <?php
 // views/seeker/applications.php
-define('BASE_URL', '../');
 $pageTitle = 'My Applications';
 $activeNav = 'applications';
 require __DIR__ . '/../layouts/header.php';
@@ -8,7 +7,7 @@ require __DIR__ . '/../layouts/header.php';
 <div class="container">
     <h1>My Applications</h1>
     <?php if (empty($applications)): ?>
-        <p class="muted">You haven't applied to any jobs yet. <a href="index.php?action=jobs">Browse jobs →</a></p>
+        <p class="muted">You haven't applied to any jobs yet. <a href="/job_portal/seeker/index.php?action=jobs">Browse jobs →</a></p>
     <?php else: ?>
     <table class="data-table">
         <thead>
@@ -19,14 +18,14 @@ require __DIR__ . '/../layouts/header.php';
         <tbody>
         <?php foreach ($applications as $app): ?>
             <tr>
-                <td><a href="index.php?action=jobDetail&id=<?= (int)$app['job_id'] ?>"><?= htmlspecialchars($app['job_title']) ?></a></td>
+                <td><a href="/job_portal/seeker/index.php?action=jobDetail&id=<?= (int)$app['job_id'] ?>"><?= htmlspecialchars($app['job_title']) ?></a></td>
                 <td><?= htmlspecialchars($app['company_name'] ?? '—') ?></td>
                 <td><?= htmlspecialchars($app['location'] ?? '—') ?></td>
                 <td><?= date('d M Y', strtotime($app['applied_at'])) ?></td>
                 <td><span class="status-badge status-<?= $app['status'] ?>"><?= ucfirst($app['status']) ?></span></td>
                 <td>
                     <?php if ($app['status'] === 'submitted'): ?>
-                        <form method="post" action="index.php?action=withdraw"
+                        <form method="post" action="/job_portal/seeker/index.php?action=withdraw"
                               onsubmit="return confirm('Withdraw this application?')">
                             <input type="hidden" name="application_id" value="<?= (int)$app['id'] ?>">
                             <button type="submit" class="btn-sm btn-danger">Withdraw</button>

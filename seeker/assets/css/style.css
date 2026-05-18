@@ -186,3 +186,18 @@ h2 { font-size: 17px; font-weight: 600; margin-bottom: 0.75rem; }
 .small { font-size: 12px; }
 .muted { color: #999; font-size: 13px; }
 .meta { font-size: 13px; color: #888; margin-top: 4px; }
+/* ── Nav badge (unread count) ──────────────────────────────────────────────── */
+.nav-badge {
+    display: inline-block;
+    background: #a32d2d;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 999px;
+    vertical-align: middle;
+    margin-left: 3px;
+}
+
+/* ── Outreach link active state ────────────────────────────────────────────── */
+.nav-links a.active { border-bottom: 2px solid #1d9e75; padding-bottom: 2px; }

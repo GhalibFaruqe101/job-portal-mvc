@@ -1,6 +1,5 @@
 <?php
 
-define('BASE_URL', '../');
 $pageTitle = 'Messages';
 $activeNav = 'messages';
 require __DIR__ . '/../layouts/header.php';
@@ -24,7 +23,7 @@ require __DIR__ . '/../layouts/header.php';
             <!-- Reply -->
             <details class="reply-toggle">
                 <summary class="btn-sm">Reply</summary>
-                <form method="post" action="index.php?action=sendMessage" class="reply-form">
+                <form method="post" action="/job_portal/seeker/index.php?action=sendMessage" class="reply-form">
                     <input type="hidden" name="recipient_id" value="<?= (int)$msg['sender_id'] ?>">
                     <input type="hidden" name="application_id" value="<?= (int)($msg['application_id'] ?? 0) ?>">
                     <textarea name="body" rows="3" placeholder="Write your reply…" required></textarea>

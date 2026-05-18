@@ -89,7 +89,7 @@ class SeekerModel {
                 resume_path = IF(VALUES(resume_path) != '', VALUES(resume_path), resume_path)"
         );
         
-        $stmt->bind_param('isssisdsss', $userId, $headline, $summary, $skills, $yearsExp,
+        $stmt->bind_param('isssisddss', $userId, $headline, $summary, $skills, $yearsExp,
             $educationLevel, $currentSalary, $expectedSalary, $preferredLocation, $resumePath);
         return $stmt->execute();
     }
@@ -404,6 +404,15 @@ class SeekerModel {
             "UPDATE messages SET is_read = 1 WHERE id = ? AND recipient_id = ?"
         );
         $stmt->bind_param('ii', $messageId, $recipientId);
+        return $stmt->execute();
+    }
+
+    public function markAllMessagesRead(int $recipientId): bool {
+        $db = getDB();
+        $stmt = $db->prepare(
+            "UPDATE messages SET is_read = 1 WHERE recipient_id = ? AND is_read = 0"
+        );
+        $stmt->bind_param('i', $recipientId);
         return $stmt->execute();
     }
 

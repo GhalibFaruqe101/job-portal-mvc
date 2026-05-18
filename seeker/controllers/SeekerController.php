@@ -62,7 +62,7 @@ class SeekerController {
 
     private function requireAuth(): void {
         if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'seeker') {
-            header('Location: index.php?action=login');
+            header('Location: /job_portal/seeker/index.php?action=login');
             exit;
         }
     }
@@ -115,7 +115,7 @@ class SeekerController {
             $_SESSION['user_id'] = $userId;
             $_SESSION['role']    = 'seeker';
             $_SESSION['name']    = $name;
-            header('Location: index.php?action=dashboard');
+            header('Location: /job_portal/seeker/index.php?action=dashboard');
             exit;
         }
         $this->render('seeker/register', ['error' => 'Registration failed. Please try again.']);
@@ -146,13 +146,13 @@ class SeekerController {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['role']    = $user['role'];
         $_SESSION['name']    = $user['name'];
-        header('Location: index.php?action=dashboard');
+        header('Location: /job_portal/seeker/index.php?action=dashboard');
         exit;
     }
 
     private function doLogout(): void {
         session_destroy();
-        header('Location: index.php?action=login');
+        header('Location: /job_portal/seeker/index.php?action=login');
         exit;
     }
 
@@ -219,27 +219,27 @@ class SeekerController {
             $yearsExp, $eduLevel, $currSal, $expSal, $prefLoc
         );
 
-        header('Location: index.php?action=profile&saved=1');
+        header('Location: /job_portal/seeker/index.php?action=profile&saved=1');
         exit;
     }
 
     private function uploadResume(): void {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: index.php?action=profile'); exit; }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /job_portal/seeker/index.php?action=profile'); exit; }
 
         $file = $_FILES['resume'] ?? null;
         if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
             $_SESSION['flash'] = 'Upload failed.';
-            header('Location: index.php?action=profile');
+            header('Location: /job_portal/seeker/index.php?action=profile');
             exit;
         }
         if ($file['size'] > self::MAX_RESUME_SIZE) {
             $_SESSION['flash'] = 'Resume must be under 5 MB.';
-            header('Location: index.php?action=profile');
+            header('Location: /job_portal/seeker/index.php?action=profile');
             exit;
         }
         if (mime_content_type($file['tmp_name']) !== 'application/pdf') {
             $_SESSION['flash'] = 'Only PDF files are accepted.';
-            header('Location: index.php?action=profile');
+            header('Location: /job_portal/seeker/index.php?action=profile');
             exit;
         }
 
@@ -253,23 +253,23 @@ class SeekerController {
         } else {
             $_SESSION['flash'] = 'Could not save file.';
         }
-        header('Location: index.php?action=profile');
+        header('Location: /job_portal/seeker/index.php?action=profile');
         exit;
     }
 
     private function uploadPic(): void {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: index.php?action=profile'); exit; }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /job_portal/seeker/index.php?action=profile'); exit; }
 
         $file = $_FILES['profile_pic'] ?? null;
         if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
             $_SESSION['flash'] = 'Upload failed.';
-            header('Location: index.php?action=profile');
+            header('Location: /job_portal/seeker/index.php?action=profile');
             exit;
         }
         $mime = mime_content_type($file['tmp_name']);
         if (!in_array($mime, self::ALLOWED_PIC_TYPES)) {
             $_SESSION['flash'] = 'Only JPG/PNG/WEBP images accepted.';
-            header('Location: index.php?action=profile');
+            header('Location: /job_portal/seeker/index.php?action=profile');
             exit;
         }
 
@@ -284,7 +284,7 @@ class SeekerController {
         } else {
             $_SESSION['flash'] = 'Could not save image.';
         }
-        header('Location: index.php?action=profile');
+        header('Location: /job_portal/seeker/index.php?action=profile');
         exit;
     }
 
@@ -328,7 +328,7 @@ class SeekerController {
     }
 
     private function applyJob(): void {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: index.php?action=jobs'); exit; }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /job_portal/seeker/index.php?action=jobs'); exit; }
 
         $userId      = $this->userId();
         $jobId       = (int)($_POST['job_id'] ?? 0);
@@ -338,7 +338,7 @@ class SeekerController {
         if (!$job) { $this->notFound(); return; }
         if ($this->model->hasApplied($userId, $jobId)) {
             $_SESSION['flash'] = 'You have already applied to this job.';
-            header('Location: index.php?action=jobDetail&id=' . $jobId);
+            header('Location: /job_portal/seeker/index.php?action=jobDetail&id=' . $jobId);
             exit;
         }
 
@@ -367,10 +367,10 @@ class SeekerController {
         $appId = $this->model->applyToJob($userId, $jobId, $coverLetter, $resumePath);
         if ($appId) {
             $_SESSION['flash'] = 'Application submitted successfully!';
-            header('Location: index.php?action=applications');
+            header('Location: /job_portal/seeker/index.php?action=applications');
         } else {
             $_SESSION['flash'] = 'Failed to submit application.';
-            header('Location: index.php?action=jobDetail&id=' . $jobId);
+            header('Location: /job_portal/seeker/index.php?action=jobDetail&id=' . $jobId);
         }
         exit;
     }
@@ -381,7 +381,7 @@ class SeekerController {
         $_SESSION['flash'] = $ok
             ? 'Application withdrawn.'
             : 'Could not withdraw (it may have already been reviewed).';
-        header('Location: index.php?action=applications');
+        header('Location: /job_portal/seeker/index.php?action=applications');
         exit;
     }
 
@@ -411,7 +411,7 @@ class SeekerController {
             echo json_encode(['saved' => $saved]);
             exit;
         }
-        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? 'index.php?action=savedJobs'));
+        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/job_portal/seeker/index.php?action=savedJobs'));
         exit;
     }
 
@@ -429,7 +429,7 @@ class SeekerController {
     }
 
     private function createAlert(): void {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: index.php?action=alerts'); exit; }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /job_portal/seeker/index.php?action=alerts'); exit; }
 
         $keyword  = trim($_POST['keyword']     ?? '');
         $catId    = (int)($_POST['category_id'] ?? 0);
@@ -437,37 +437,40 @@ class SeekerController {
         $jobType  = trim($_POST['job_type']    ?? '');
 
         $this->model->createAlert($this->userId(), $keyword, $catId, $location, $jobType);
-        header('Location: index.php?action=alerts');
+        header('Location: /job_portal/seeker/index.php?action=alerts');
         exit;
     }
 
     private function deleteAlert(): void {
         $alertId = (int)($_POST['alert_id'] ?? 0);
         $this->model->deleteAlert($alertId, $this->userId());
-        header('Location: index.php?action=alerts');
+        header('Location: /job_portal/seeker/index.php?action=alerts');
         exit;
     }
 
     // ── Messages 
 
     private function showMessages(): void {
-        $messages = $this->model->getInboxMessages($this->userId());
+        $userId   = $this->userId();
+        $messages = $this->model->getInboxMessages($userId);
+        // Auto-mark all unread messages as read when inbox is opened
+        $this->model->markAllMessagesRead($userId);
         $this->render('seeker/messages', ['messages' => $messages]);
     }
 
     private function sendMessage(): void {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: index.php?action=messages'); exit; }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /job_portal/seeker/index.php?action=messages'); exit; }
 
         $recipientId   = (int)($_POST['recipient_id']   ?? 0);
         $applicationId = (int)($_POST['application_id'] ?? 0);
         $body          = trim($_POST['body']            ?? '');
 
         if (!$body || !$recipientId) {
-            header('Location: index.php?action=messages');
+            header('Location: /job_portal/seeker/index.php?action=messages');
             exit;
         }
         $this->model->sendMessage($this->userId(), $recipientId, $applicationId, $body);
-        header('Location: index.php?action=messages');
+        header('Location: /job_portal/seeker/index.php?action=messages');
         exit;
     }
 
@@ -482,7 +485,7 @@ class SeekerController {
         $allowed    = ['read', 'responded'];
         if (!in_array($status, $allowed)) $status = 'responded';
         $this->model->updateOutreachStatus($outreachId, $this->userId(), $status);
-        header('Location: index.php?action=outreach');
+        header('Location: /job_portal/seeker/index.php?action=outreach');
         exit;
     }
 
@@ -493,7 +496,7 @@ class SeekerController {
     }
 
     private function submitComplaint(): void {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: index.php?action=jobs'); exit; }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /job_portal/seeker/index.php?action=jobs'); exit; }
 
         $subjectId   = (int)($_POST['subject_id']  ?? 0);
         $description = trim($_POST['description']  ?? '');
@@ -504,7 +507,7 @@ class SeekerController {
         }
         $this->model->submitComplaint($this->userId(), $subjectId, $description);
         $_SESSION['flash'] = 'Complaint submitted. Admin will review it.';
-        header('Location: index.php?action=dashboard');
+        header('Location: /job_portal/seeker/index.php?action=dashboard');
         exit;
     }
 

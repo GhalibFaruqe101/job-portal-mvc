@@ -1,6 +1,5 @@
 <?php
 
-define('BASE_URL', '../');
 $pageTitle = 'Find Jobs';
 $activeNav = 'jobs';
 require __DIR__ . '/../layouts/header.php';
@@ -87,7 +86,7 @@ function doSearch() {
         job_type: jobType, exp_level: expLevel, sal_min: salMin, sal_max: salMax });
 
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'api/jobs_search.php?' + params.toString(), true);
+    xhr.open('GET', '/job_portal/seeker/api/jobs_search.php?' + params.toString(), true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
     xhr.onreadystatechange = function () {
@@ -116,7 +115,7 @@ function renderJobs(jobs) {
             <div class="job-card-top">
                 ${j.logo_path ? `<img src="${j.logo_path}" class="company-logo" alt="">` : ''}
                 <div>
-                    <a href="index.php?action=jobDetail&id=${j.id}" class="job-title">${escHtml(j.title)}</a>
+                    <a href="/job_portal/seeker/index.php?action=jobDetail&id=${j.id}" class="job-title">${escHtml(j.title)}</a>
                     <p class="job-company">${escHtml(j.company_name)}${j.agency_name ? ' via ' + escHtml(j.agency_name) : ''}</p>
                     <div class="badge-row">
                         <span class="badge">${escHtml(j.job_type)}</span>
@@ -129,7 +128,7 @@ function renderJobs(jobs) {
             <div class="job-card-footer">
                 <span class="muted"> ${escHtml(j.location)}</span>
                 <span class="muted">Deadline: ${j.deadline ?? '—'}</span>
-                <a href="index.php?action=jobDetail&id=${j.id}" class="btn-sm">View &amp; Apply</a>
+                <a href="/job_portal/seeker/index.php?action=jobDetail&id=${j.id}" class="btn-sm">View &amp; Apply</a>
             </div>
         </div>
     `).join('');
