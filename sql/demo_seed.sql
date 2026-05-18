@@ -14,7 +14,8 @@ INSERT IGNORE INTO `categories` (`id`, `name`, `description`) VALUES
 (5, 'Design',        'UI/UX, graphic design, and creative roles');
 
 -- ─── 2. Employer User ────────────────────────────────────────
--- Password: employer123 (bcrypt hash)
+-- WARNING: These rows use a static, known password hash ('employer123' / 'seeker123').
+-- NEVER run this demo seed file in a production environment. It is strictly for local dev/testing.
 INSERT IGNORE INTO `users` (`id`, `name`, `email`, `password_hash`, `phone`, `role`, `is_active`, `is_verified`, `created_at`) VALUES
 (10, 'TechCorp HR',   'hr@techcorp.test',    '$2y$10$AgnIL3.Qr4m41nA4ZSWyUeASlrCMl0E5HcQpCPvVMmbf2dKZBWUxe', '01700000001', 'employer', 1, 1, '2026-05-01 10:00:00'),
 (11, 'DataWorks Ltd', 'jobs@dataworks.test', '$2y$10$AgnIL3.Qr4m41nA4ZSWyUeASlrCMl0E5HcQpCPvVMmbf2dKZBWUxe', '01700000002', 'employer', 1, 1, '2026-05-01 10:30:00'),

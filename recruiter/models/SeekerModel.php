@@ -21,8 +21,9 @@ class SeekerModel {
         $types  = '';
 
         if (!empty($keyword)) {
-            $sql .= " AND (sp.skills LIKE ? OR sp.headline LIKE ? OR u.name LIKE ?)";
-            $like = '%' . $keyword . '%';
+            $sql .= " AND (sp.skills LIKE ? ESCAPE '\\' OR sp.headline LIKE ? ESCAPE '\\' OR u.name LIKE ? ESCAPE '\\')";
+            $keywordEscaped = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $keyword);
+            $like = '%' . $keywordEscaped . '%';
             $params[] = $like;
             $params[] = $like;
             $params[] = $like;
@@ -36,8 +37,9 @@ class SeekerModel {
         }
 
         if (!empty($location)) {
-            $sql .= " AND sp.preferred_location LIKE ?";
-            $params[] = '%' . $location . '%';
+            $sql .= " AND sp.preferred_location LIKE ? ESCAPE '\\'";
+            $locEscaped = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $location);
+            $params[] = '%' . $locEscaped . '%';
             $types .= 's';
         }
 

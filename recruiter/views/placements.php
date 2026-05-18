@@ -65,7 +65,7 @@ $placements = $model->getPlacements($recruiter_id, 500);
                                 <td>
                                     <span class="client-badge"><?php echo htmlspecialchars($p['client_name']); ?></span>
                                 </td>
-                                <td><?php echo date('d M Y', strtotime($p['applied_at'])); ?></td>
+                                <td><?php $ts = strtotime($p['applied_at']); echo $ts ? date('d M Y', $ts) : 'N/A'; ?></td>
                                 <td><span class="badge-success">Hired</span></td>
                             </tr>
                         <?php endforeach; ?>

@@ -96,25 +96,34 @@ document.getElementById('seekerSearchForm').addEventListener('submit', function(
                 return;
             }
 
+            const escapeHtml = (unsafe) => {
+                return (unsafe || '').toString()
+                     .replace(/&/g, "&amp;")
+                     .replace(/</g, "&lt;")
+                     .replace(/>/g, "&gt;")
+                     .replace(/"/g, "&quot;")
+                     .replace(/'/g, "&#039;");
+            };
+
             resultsGrid.innerHTML = data.map(s => `
                 <div class="seeker-card">
                     <div class="seeker-header">
-                        <div class="seeker-avatar">${s.name.charAt(0).toUpperCase()}</div>
+                        <div class="seeker-avatar">${escapeHtml(s.name.charAt(0).toUpperCase())}</div>
                         <div class="seeker-title">
-                            <h2>${s.name}</h2>
-                            <p>${s.headline}</p>
+                            <h2>${escapeHtml(s.name)}</h2>
+                            <p>${escapeHtml(s.headline)}</p>
                         </div>
                     </div>
                     <div class="seeker-meta">
-                        <span>📍 ${s.preferred_location}</span>
-                        <span>📊 ${s.years_experience} yrs exp</span>
-                        <span>💰 ৳${s.expected_salary}</span>
+                        <span>📍 ${escapeHtml(s.preferred_location)}</span>
+                        <span>📊 ${escapeHtml(s.years_experience)} yrs exp</span>
+                        <span>💰 ৳${escapeHtml(s.expected_salary)}</span>
                     </div>
                     <div class="seeker-skills">
-                        ${s.skills.split(',').map(skill => `<span class="skill-tag">${skill.trim()}</span>`).join('')}
+                        ${(s.skills || '').split(',').map(skill => skill.trim() ? `<span class="skill-tag">${escapeHtml(skill.trim())}</span>` : '').join('')}
                     </div>
                     <div class="seeker-actions">
-                        <a href="seeker_profile.php?id=${s.id}" class="btn-view-profile">View Profile</a>
+                        <a href="seeker_profile.php?id=${encodeURIComponent(s.seeker_id)}" class="btn-view-profile">View Profile</a>
                     </div>
                 </div>
             `).join('');
