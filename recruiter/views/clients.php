@@ -122,6 +122,7 @@ $clients = $model->getMyClients($recruiter_id, $search);
                         <span class="active-jobs"><?php echo $c['active_jobs']; ?> Active Job<?php echo $c['active_jobs'] != 1 ? 's' : ''; ?></span>
                         <form method="POST" action="../controllers/ClientController.php?action=remove"
                               onsubmit="return confirm('Remove this client?');" style="display:inline;">
+                            <?php echo csrfInput(); ?>
                             <input type="hidden" name="client_id" value="<?php echo $c['client_id']; ?>">
                             <button type="submit" class="btn-remove">Remove</button>
                         </form>
@@ -156,6 +157,7 @@ $clients = $model->getMyClients($recruiter_id, $search);
             </div>
             <div id="employer-results" class="employer-results"></div>
             <form id="linkForm" method="POST" action="../controllers/ClientController.php?action=add_linked">
+                <?php echo csrfInput(); ?>
                 <input type="hidden" id="selected-employer-id" name="employer_id" value="">
                 <div id="selected-employer" class="selected-employer" style="display:none;"></div>
                 <button type="submit" class="btn-modal-submit" id="linkBtn" disabled>Link Client</button>
@@ -166,6 +168,7 @@ $clients = $model->getMyClients($recruiter_id, $search);
         <div id="tab-standalone" class="tab-content" style="display:none;">
             <p class="tab-desc">Add a company that is not registered on JobPortal.</p>
             <form method="POST" action="../controllers/ClientController.php?action=add_standalone">
+                <?php echo csrfInput(); ?>
                 <div class="form-group">
                     <label for="company-name">Company Name</label>
                     <input type="text" id="company-name" name="company_name" class="form-control"
@@ -210,7 +213,7 @@ searchInput.addEventListener('input', function() {
                     return;
                 }
                 resultsDiv.innerHTML = data.map(emp =>
-                    `<div class="employer-item" onclick="selectEmployer(${emp.employer_id}, '${escapeHtml(emp.company_name || emp.contact_name)}', '${escapeHtml(emp.email)}')">
+                    `<div class="employer-item" data-employer-id="${emp.employer_id}" data-company-name="${escapeHtml(emp.company_name || emp.contact_name)}" data-email="${escapeHtml(emp.email)}">
                         <div class="emp-name">${escapeHtml(emp.company_name || 'No company name')}</div>
                         <div class="emp-detail">${escapeHtml(emp.contact_name)} &middot; ${escapeHtml(emp.email)}</div>
                     </div>`
@@ -220,6 +223,18 @@ searchInput.addEventListener('input', function() {
                 resultsDiv.innerHTML = '<div class="no-results">Search failed</div>';
             });
     }, 300);
+});
+
+// Event delegation for employer selection
+resultsDiv.addEventListener('click', function(e) {
+    const item = e.target.closest('.employer-item');
+    if (item) {
+        selectEmployer(
+            parseInt(item.dataset.employerId),
+            item.dataset.companyName,
+            item.dataset.email
+        );
+    }
 });
 
 function selectEmployer(id, name, email) {
