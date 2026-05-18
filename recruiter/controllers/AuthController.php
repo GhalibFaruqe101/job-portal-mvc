@@ -52,7 +52,7 @@ function handleLogin($userModel)
             if (!$user['is_active']) {
                 $errors[] = "Your account has been deactivated. Contact support.";
             } elseif (!$user['is_verified']) {
-                $errors[] = "Your account is pending admin approval. Please wait for verification.";
+                $errors[] = "Your account is pending admin verification. Please wait for approval.";
             } else {
                 // Regenerate session ID on login to prevent session fixation
                 session_regenerate_id(true);
@@ -119,7 +119,7 @@ function handleRegister($userModel)
 
     if (empty($errors)) {
         if ($userModel->createUser($name, $email, $phone, $password, $agency_name)) {
-            $_SESSION['auth_success'] = "Registration successful! Please log in.";
+            $_SESSION['auth_success'] = "Registration submitted! An admin will verify your account before you can log in.";
             header("Location: ../views/login.php");
             exit();
         } else {
