@@ -22,7 +22,8 @@ function require_role($required_role)
     }
     if ($_SESSION['role'] !== $required_role) {
         http_response_code(403);
-        die("Access Denied: You do not have permission to view this page.");
+        $current_role = htmlspecialchars($_SESSION['role']);
+        die("Access Denied: You are currently logged in as a '$current_role' in another tab. Please <a href='logout.php'>log out</a> first to access the recruiter portal.");
     }
 }
 

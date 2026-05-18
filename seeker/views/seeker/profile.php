@@ -9,11 +9,11 @@ require __DIR__ . '/../layouts/header.php';
     <div class="profile-header-card">
         <div class="avatar-wrap">
             <?php if (!empty($user['profile_pic'])): ?>
-                <img src="/job_portal/<?= htmlspecialchars($user['profile_pic']) ?>" alt="Profile picture" class="profile-pic">
+                <img src="<?= BASE_PATH . '/' . htmlspecialchars($user['profile_pic']) ?>" alt="Profile picture" class="profile-pic">
             <?php else: ?>
                 <div class="avatar-initials"><?= strtoupper(substr($user['name'], 0, 2)) ?></div>
             <?php endif; ?>
-            <form method="post" action="/job_portal/seeker/index.php?action=uploadPic" enctype="multipart/form-data" class="inline-form">
+            <form method="post" action="<?= BASE_PATH ?>/index.php?action=uploadPic" enctype="multipart/form-data" class="inline-form">
                 <label class="btn-sm" for="pic-input">Change photo</label>
                 <input id="pic-input" type="file" name="profile_pic" accept="image/jpeg,image/png,image/webp"
                        onchange="this.form.submit()" style="display:none">
@@ -23,7 +23,7 @@ require __DIR__ . '/../layouts/header.php';
             <h1><?= htmlspecialchars($user['name']) ?></h1>
             <p class="headline"><?= htmlspecialchars($profile['headline'] ?? 'No headline set') ?></p>
             <p class="meta"><?= htmlspecialchars($user['email']) ?> · <?= htmlspecialchars($user['phone']) ?></p>
-            <a href="/job_portal/seeker/index.php?action=editProfile" class="btn">Edit Profile</a>
+            <a href="<?= BASE_PATH ?>/index.php?action=editProfile" class="btn">Edit Profile</a>
         </div>
     </div>
 
@@ -60,7 +60,7 @@ require __DIR__ . '/../layouts/header.php';
             <h2>Resume</h2>
             <?php if (!empty($profile['resume_path'])): ?>
                 <p>
-                    <a href="/job_portal/<?= htmlspecialchars($profile['resume_path']) ?>" download class="btn-sm">
+                    <a href="<?= BASE_PATH . '/' . htmlspecialchars($profile['resume_path']) ?>" download class="btn-sm">
                         ⬇ Download Resume
                     </a>
                     <span class="muted">(PDF)</span>
@@ -68,7 +68,7 @@ require __DIR__ . '/../layouts/header.php';
             <?php else: ?>
                 <p class="muted">No resume uploaded yet.</p>
             <?php endif; ?>
-            <form method="post" action="/job_portal/seeker/index.php?action=uploadResume" enctype="multipart/form-data" class="upload-form">
+            <form method="post" action="<?= BASE_PATH ?>/index.php?action=uploadResume" enctype="multipart/form-data" class="upload-form">
                 <label>Upload / replace resume (PDF, max 5 MB):</label>
                 <input type="file" name="resume" accept="application/pdf" required>
                 <button type="submit" class="btn">Upload</button>

@@ -123,7 +123,7 @@ document.getElementById('seekerSearchForm').addEventListener('submit', function(
                         ${(s.skills || '').split(',').map(skill => skill.trim() ? `<span class="skill-tag">${escapeHtml(skill.trim())}</span>` : '').join('')}
                     </div>
                     <div class="seeker-actions">
-                        <a href="seeker_profile.php?id=${encodeURIComponent(s.seeker_id)}" class="btn-view-profile">View Profile</a>
+                        <a href="seeker_profile.php?id=${encodeURIComponent(s.id)}" class="btn-view-profile">View Profile</a>
                     </div>
                 </div>
             `).join('');
@@ -133,6 +133,9 @@ document.getElementById('seekerSearchForm').addEventListener('submit', function(
             resultsGrid.innerHTML = `<div class="empty-state"><p>Error occurred while searching.</p></div>`;
         });
 });
+
+// Auto-run search on page load so recruiters can see the latest seekers live immediately
+document.getElementById('seekerSearchForm').dispatchEvent(new Event('submit', { cancelable: true }));
 </script>
 
 </body>

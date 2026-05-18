@@ -7,14 +7,14 @@ require __DIR__ . '/../layouts/header.php';
 <div class="container">
     <h1>Saved Jobs</h1>
     <?php if (empty($jobs)): ?>
-        <p class="muted">No saved jobs. <a href="/job_portal/seeker/index.php?action=jobs">Browse jobs →</a></p>
+        <p class="muted">No saved jobs. <a href="<?= BASE_PATH ?>/index.php?action=jobs">Browse jobs →</a></p>
     <?php else: ?>
     <div class="job-list">
         <?php foreach ($jobs as $job): ?>
         <div class="job-card">
             <div class="job-card-top">
                 <div>
-                    <a href="/job_portal/seeker/index.php?action=jobDetail&id=<?= (int)$job['job_id'] ?>" class="job-title">
+                    <a href="<?= BASE_PATH ?>/index.php?action=jobDetail&id=<?= (int)$job['job_id'] ?>" class="job-title">
                         <?= htmlspecialchars($job['title']) ?>
                     </a>
                     <p class="job-company"><?= htmlspecialchars($job['company_name'] ?? '') ?></p>
@@ -30,7 +30,7 @@ require __DIR__ . '/../layouts/header.php';
                     </div>
                 </div>
                 <!-- Unsave -->
-                <form method="post" action="/job_portal/seeker/index.php?action=saveJob">
+                <form method="post" action="<?= BASE_PATH ?>/index.php?action=saveJob">
                     <input type="hidden" name="job_id" value="<?= (int)$job['job_id'] ?>">
                     <button type="submit" class="btn-sm btn-danger">Remove</button>
                 </form>
