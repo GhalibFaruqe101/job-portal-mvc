@@ -20,7 +20,8 @@ if (!$app_id || !$status) {
     exit();
 }
 
-if ($model->updateStatus($app_id, $status)) {
+$recruiter_id = $_SESSION['user_id'];
+if ($model->updateStatus($app_id, $status, $recruiter_id)) {
     echo json_encode(['success' => true, 'message' => 'Status updated.', 'new_status' => $status]);
 } else {
     echo json_encode(['success' => false, 'message' => 'Update failed.']);

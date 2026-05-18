@@ -8,10 +8,10 @@ class CandidateModel {
     }
 
     /**
-     * Get all applications with seeker and job info
-     * Optionally filter by status or search by name/job title
+     * Get all applications for jobs posted by this recruiter
+     * Optionally filter by job_id, status, or search keyword
      */
-    public function getAllCandidates($search = '', $status = '') {
+    public function getRecruiterCandidates($recruiter_id, $job_id = '', $status = '', $search = '') {
         $sql = "SELECT 
                     a.id           AS application_id,
                     a.status       AS app_status,
@@ -26,62 +26,76 @@ class CandidateModel {
                     j.id           AS job_id,
                     j.title        AS job_title,
                     j.location,
-                    ep.company_name
+                    COALESCE(ep.company_name, rc.company_name_override, 'Unknown') AS company_name
                 FROM applications a
                 JOIN users u        ON a.seeker_id   = u.id
                 JOIN jobs  j        ON a.job_id      = j.id
+                LEFT JOIN recruiter_clients rc ON j.recruiter_id = rc.recruiter_id 
+                    AND (j.employer_id = rc.employer_id OR (rc.employer_id IS NULL AND j.employer_id = j.recruiter_id))
                 LEFT JOIN employer_profiles ep ON j.employer_id = ep.user_id
-                WHERE 1=1";
+                WHERE j.recruiter_id = ?";
 
-        $params = [];
-        $types  = '';
+        $params = [$recruiter_id];
+        $types  = 'i';
 
-        if (!empty($search)) {
-            $sql    .= " AND (u.name LIKE ? OR j.title LIKE ?)";
-            $like    = '%' . $search . '%';
-            $params[] = $like;
-            $params[] = $like;
-            $types   .= 'ss';
+        if (!empty($job_id)) {
+            $sql .= " AND a.job_id = ?";
+            $params[] = (int)$job_id;
+            $types .= 'i';
         }
         if (!empty($status)) {
-            $sql    .= " AND a.status = ?";
+            $sql .= " AND a.status = ?";
             $params[] = $status;
-            $types   .= 's';
+            $types .= 's';
+        }
+        if (!empty($search)) {
+            $sql .= " AND (u.name LIKE ? OR j.title LIKE ?)";
+            $like = '%' . $search . '%';
+            $params[] = $like;
+            $params[] = $like;
+            $types .= 'ss';
         }
 
-        $sql .= " ORDER BY a.applied_at DESC";
+        $sql .= " GROUP BY a.id ORDER BY a.applied_at DESC";
 
-        if (!empty($params)) {
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param($types, ...$params);
-            $stmt->execute();
-            return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-        }
-
-        return $this->conn->query($sql)->fetch_all(MYSQLI_ASSOC);
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param($types, ...$params);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
     /**
-     * Update application status
+     * Update application status (must belong to recruiter's job)
      */
-    public function updateStatus($application_id, $status) {
-        $allowed = ['submitted', 'reviewed', 'shortlisted', 'interview', 'rejected', 'withdrawn'];
+    public function updateStatus($application_id, $status, $recruiter_id) {
+        $allowed = ['submitted', 'reviewed', 'shortlisted', 'interview', 'rejected', 'withdrawn', 'hired'];
         if (!in_array($status, $allowed)) return false;
 
         $stmt = $this->conn->prepare(
-            "UPDATE applications SET status = ? WHERE id = ?"
+            "UPDATE applications a
+             JOIN jobs j ON a.job_id = j.id
+             SET a.status = ? 
+             WHERE a.id = ? AND j.recruiter_id = ?"
         );
-        $stmt->bind_param("si", $status, $application_id);
-        return $stmt->execute();
+        $stmt->bind_param("sii", $status, $application_id, $recruiter_id);
+        return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
     /**
-     * Count candidates grouped by status
+     * Count candidates grouped by status for this recruiter
      */
-    public function getStatusCounts() {
-        $result = $this->conn->query(
-            "SELECT status, COUNT(*) as total FROM applications GROUP BY status"
+    public function getStatusCounts($recruiter_id) {
+        $stmt = $this->conn->prepare(
+            "SELECT a.status, COUNT(a.id) as total 
+             FROM applications a
+             JOIN jobs j ON a.job_id = j.id
+             WHERE j.recruiter_id = ?
+             GROUP BY a.status"
         );
+        $stmt->bind_param("i", $recruiter_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
         $counts = [];
         while ($row = $result->fetch_assoc()) {
             $counts[$row['status']] = $row['total'];

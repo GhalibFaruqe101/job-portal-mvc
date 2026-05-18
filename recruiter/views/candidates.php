@@ -3,8 +3,11 @@ require_once '../helpers/session.php';
 require_role('recruiter');
 require_once '../config/db.php';
 require_once '../models/CandidateModel.php';
+require_once '../models/JobModel.php';
 
 $model = new CandidateModel($conn);
+$jobModel = new JobModel($conn);
+$recruiter_id = $_SESSION['user_id'];
 
 // Flash messages
 $success = $_SESSION['candidate_success'] ?? '';
@@ -12,11 +15,13 @@ $error   = $_SESSION['candidate_error']   ?? '';
 unset($_SESSION['candidate_success'], $_SESSION['candidate_error']);
 
 // Filters from GET
-$search     = trim($_GET['search'] ?? '');
+$search        = trim($_GET['search'] ?? '');
 $filter_status = $_GET['status'] ?? '';
+$filter_job    = $_GET['job_id'] ?? '';
 
-$candidates   = $model->getAllCandidates($search, $filter_status);
-$statusCounts = $model->getStatusCounts();
+$jobs         = $jobModel->getRecruiterJobs($recruiter_id);
+$candidates   = $model->getRecruiterCandidates($recruiter_id, $filter_job, $filter_status, $search);
+$statusCounts = $model->getStatusCounts($recruiter_id);
 $total        = array_sum($statusCounts);
 
 $statusLabels = [
@@ -26,6 +31,7 @@ $statusLabels = [
     'interview'   => 'Interview',
     'rejected'    => 'Rejected',
     'withdrawn'   => 'Withdrawn',
+    'hired'       => 'Hired',
 ];
 ?>
 <!DOCTYPE html>
@@ -47,6 +53,9 @@ $statusLabels = [
     <div class="nav-links">
         <a href="dashboard.php">Dashboard</a>
         <a href="clients.php">Clients</a>
+        <a href="jobs.php">Jobs</a>
+        <a href="seekers.php">Seekers</a>
+        <a href="outreach.php">Outreach</a>
         <a href="candidates.php" class="active">Candidates</a>
         <a href="profile.php">Profile</a>
         <a href="logout.php">Logout</a>
@@ -85,10 +94,18 @@ $statusLabels = [
     <!-- Search + Filter Bar -->
     <form method="GET" action="candidates.php">
         <input type="hidden" name="status" value="<?php echo htmlspecialchars($filter_status); ?>">
-        <div class="filter-bar">
+        <div class="filter-bar" style="display: flex; gap: 1rem; flex-wrap: wrap;">
             <input type="text" name="search" id="search-input"
                    placeholder="Search by candidate name or job title..."
                    value="<?php echo htmlspecialchars($search); ?>">
+            <select name="job_id" onchange="this.form.submit()">
+                <option value="">All Jobs</option>
+                <?php foreach ($jobs as $job): ?>
+                    <option value="<?php echo $job['id']; ?>" <?php echo ($filter_job == $job['id']) ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($job['title']); ?> (<?php echo htmlspecialchars($job['client_name']); ?>)
+                    </option>
+                <?php endforeach; ?>
+            </select>
             <select name="status" onchange="this.form.submit()">
                 <option value="">All Statuses</option>
                 <?php foreach ($statusLabels as $key => $label): ?>
@@ -195,7 +212,7 @@ function updateStatus(selectEl) {
             const badgeClasses = 'status-badge badge-' + data.new_status;
             const statusLabels = {
                 submitted: 'Submitted', reviewed: 'Reviewed', shortlisted: 'Shortlisted',
-                interview: 'Interview', rejected: 'Rejected',  withdrawn: 'Withdrawn'
+                interview: 'Interview', rejected: 'Rejected',  withdrawn: 'Withdrawn', hired: 'Hired'
             };
             badge.innerHTML = `<span class="${badgeClasses}">${statusLabels[data.new_status] || data.new_status}</span>`;
         } else {
