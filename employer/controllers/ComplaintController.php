@@ -11,12 +11,15 @@ switch ($action) {
     case 'index':
         $complaints = [];
         $stmt = $conn->prepare("
-            SELECT c.id, c.description, c.status, c.created_at, u.name as subject_name, u.role as subject_role
+            SELECT c.id, c.submitter_id, c.subject_id, c.description, c.status, c.admin_note, c.created_at,
+                   u.name as subject_name, u.role as subject_role
             FROM complaints c
             JOIN users u ON c.subject_id = u.id
             WHERE c.submitter_id = ?
             ORDER BY c.created_at DESC
         ");
+
+
         $stmt->bind_param('i', $employer_id);
         $stmt->execute();
         $res = $stmt->get_result();
@@ -29,7 +32,7 @@ switch ($action) {
 
     case 'create':
         $subject_id = $_GET['subject_id'] ?? 0;
-        
+
         // Fetch subject details to verify they exist and get their name
         $stmt = $conn->prepare("SELECT name, role FROM users WHERE id = ?");
         $stmt->bind_param('i', $subject_id);
@@ -40,7 +43,7 @@ switch ($action) {
         }
         $subject = $res->fetch_assoc();
         $stmt->close();
-        
+
         require '../views/complaint-form.php';
         break;
 
@@ -68,7 +71,7 @@ switch ($action) {
             $stmt->execute();
             $subject = $stmt->get_result()->fetch_assoc();
             $stmt->close();
-            
+
             require '../views/complaint-form.php';
         }
         break;
