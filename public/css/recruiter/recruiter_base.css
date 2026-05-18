@@ -1,0 +1,10 @@
+/* /public/css/recruiter/recruiter_base.css */
+/* Shared global rules for all recruiter pages */
+
+body {
+    background-color: #f8fafc;
+    font-family: 'Inter', sans-serif;
+}
+
+.global-nav .nav-links a.active { color: #8b5cf6; font-weight: 600; }
+.global-nav .nav-links a:hover  { color: #7c3aed; }

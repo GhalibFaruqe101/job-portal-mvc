@@ -1,13 +1,5 @@
 /* /public/css/recruiter/profile.css */
 
-body {
-    background-color: #f8fafc;
-    font-family: 'Inter', sans-serif;
-}
-
-.global-nav .nav-links a:hover { color: #7c3aed; }
-.global-nav .nav-links a.active { color: #8b5cf6; font-weight: 600; }
-
 .profile-main {
     padding: 2rem 5%;
     max-width: 960px;

@@ -23,6 +23,7 @@ $recentActivities = $candModel->getRecruiterCandidates($recruiter_id, '', '', ''
     
     <!-- 1. Shared Global CSS -->
     <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="../../public/css/recruiter/recruiter_base.css">
     <!-- 2. Specific Recruiter Dashboard CSS -->
     <link rel="stylesheet" href="../../public/css/recruiter/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -123,4 +124,5 @@ $recentActivities = $candModel->getRecruiterCandidates($recruiter_id, '', '', ''
 
 </body>
 </html>
+
 

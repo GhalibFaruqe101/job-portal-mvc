@@ -43,6 +43,7 @@ $statusLabels = [
     <title>Candidates - JobPortal Recruiter</title>
     <meta name="description" content="Manage your talent pipeline and candidate applications.">
     <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="../../public/css/recruiter/recruiter_base.css">
     <link rel="stylesheet" href="../../public/css/recruiter/dashboard.css">
     <link rel="stylesheet" href="../../public/css/recruiter/candidates.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -226,4 +227,5 @@ function updateStatus(selectEl) {
 
 </body>
 </html>
+
 

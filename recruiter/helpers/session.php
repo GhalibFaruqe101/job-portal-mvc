@@ -9,11 +9,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 // 2. Standard Login Check
-function is_logged_in() {
+function is_logged_in()
+{
     return isset($_SESSION['user_id']) && isset($_SESSION['role']);
 }
 // 3. Role-Based Access Control (RBAC)
-function require_role($required_role) {
+function require_role($required_role)
+{
     if (!is_logged_in()) {
         header("Location: " . RECRUITER_BASE . "/views/login.php");
         exit();
@@ -25,21 +27,24 @@ function require_role($required_role) {
 }
 
 // 4. CSRF Protection Helpers
-function generateCsrfToken() {
+function generateCsrfToken()
+{
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     }
     return $_SESSION['csrf_token'];
 }
 
-function verifyCsrfToken($token) {
+function verifyCsrfToken($token)
+{
     if (empty($_SESSION['csrf_token']) || empty($token)) {
         return false;
     }
     return hash_equals($_SESSION['csrf_token'], $token);
 }
 
-function csrfInput() {
+function csrfInput()
+{
     return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(generateCsrfToken()) . '">';
 }
 ?>

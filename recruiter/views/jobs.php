@@ -35,6 +35,7 @@ $expLevels    = ['entry' => 'Entry', 'mid' => 'Mid', 'senior' => 'Senior'];
     <title>Jobs - JobPortal Recruiter</title>
     <meta name="description" content="Manage job postings for your clients.">
     <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="../../public/css/recruiter/recruiter_base.css">
     <link rel="stylesheet" href="../../public/css/recruiter/dashboard.css">
     <link rel="stylesheet" href="../../public/css/recruiter/jobs.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -144,4 +145,5 @@ $expLevels    = ['entry' => 'Entry', 'mid' => 'Mid', 'senior' => 'Senior'];
 
 </body>
 </html>
+
 

@@ -23,7 +23,8 @@ switch ($action) {
         exit();
 }
 
-function handleLogin($userModel) {
+function handleLogin($userModel)
+{
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         header("Location: ../views/login.php");
         exit();
@@ -36,9 +37,9 @@ function handleLogin($userModel) {
         exit();
     }
 
-    $email    = trim($_POST['email'] ?? '');
+    $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
-    $errors   = [];
+    $errors = [];
 
     if (empty($email) || empty($password)) {
         $errors[] = "Please fill in all fields.";
@@ -56,8 +57,8 @@ function handleLogin($userModel) {
                 // Regenerate session ID on login to prevent session fixation
                 session_regenerate_id(true);
                 // Mandatory session keys (team contract)
-                $_SESSION['user_id']   = $user['id'];
-                $_SESSION['role']      = 'recruiter';
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['role'] = 'recruiter';
                 $_SESSION['user_name'] = $user['name'];
                 header("Location: ../views/dashboard.php");
                 exit();
@@ -68,12 +69,13 @@ function handleLogin($userModel) {
     }
 
     $_SESSION['auth_errors'] = $errors;
-    $_SESSION['old_email']   = $email;
+    $_SESSION['old_email'] = $email;
     header("Location: ../views/login.php");
     exit();
 }
 
-function handleRegister($userModel) {
+function handleRegister($userModel)
+{
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         header("Location: ../views/register.php");
         exit();
@@ -86,13 +88,13 @@ function handleRegister($userModel) {
         exit();
     }
 
-    $name             = trim($_POST['name'] ?? '');
-    $email            = trim($_POST['email'] ?? '');
-    $phone            = trim($_POST['phone'] ?? '');
-    $agency_name      = trim($_POST['agency_name'] ?? '');
-    $password         = $_POST['password'] ?? '';
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $agency_name = trim($_POST['agency_name'] ?? '');
+    $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
-    $errors           = [];
+    $errors = [];
 
     // Validation
     if (empty($name) || empty($email) || empty($password) || empty($agency_name)) {
@@ -125,24 +127,30 @@ function handleRegister($userModel) {
         }
     }
 
-    $_SESSION['auth_errors']   = $errors;
-    $_SESSION['old_name']      = $name;
-    $_SESSION['old_email']     = $email;
-    $_SESSION['old_phone']     = $phone;
-    $_SESSION['old_agency']    = $agency_name;
+    $_SESSION['auth_errors'] = $errors;
+    $_SESSION['old_name'] = $name;
+    $_SESSION['old_email'] = $email;
+    $_SESSION['old_phone'] = $phone;
+    $_SESSION['old_agency'] = $agency_name;
     header("Location: ../views/register.php");
     exit();
 }
 
-function handleLogout() {
+function handleLogout()
+{
     session_unset();
     session_destroy();
     // Clear session cookie
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
-        setcookie(session_name(), '', time() - 42000,
-            $params["path"], $params["domain"],
-            $params["secure"], $params["httponly"]
+        setcookie(
+            session_name(),
+            '',
+            time() - 42000,
+            $params["path"],
+            $params["domain"],
+            $params["secure"],
+            $params["httponly"]
         );
     }
     header("Location: ../views/login.php");

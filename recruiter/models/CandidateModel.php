@@ -1,9 +1,11 @@
 <?php
 // Recruiter Module: Candidate Model
-class CandidateModel {
+class CandidateModel
+{
     private $conn;
 
-    public function __construct($conn) {
+    public function __construct($conn)
+    {
         $this->conn = $conn;
     }
 
@@ -11,7 +13,8 @@ class CandidateModel {
      * Get all applications for jobs posted by this recruiter
      * Optionally filter by job_id, status, or search keyword
      */
-    public function getRecruiterCandidates($recruiter_id, $job_id = '', $status = '', $search = '', $limit = 0) {
+    public function getRecruiterCandidates($recruiter_id, $job_id = '', $status = '', $search = '', $limit = 0)
+    {
         $sql = "SELECT 
                     a.id           AS application_id,
                     a.status       AS app_status,
@@ -36,11 +39,11 @@ class CandidateModel {
                 WHERE j.recruiter_id = ?";
 
         $params = [$recruiter_id];
-        $types  = 'i';
+        $types = 'i';
 
         if (!empty($job_id)) {
             $sql .= " AND a.job_id = ?";
-            $params[] = (int)$job_id;
+            $params[] = (int) $job_id;
             $types .= 'i';
         }
         if (!empty($status)) {
@@ -59,7 +62,7 @@ class CandidateModel {
         $sql .= " GROUP BY a.id ORDER BY a.applied_at DESC";
 
         if ($limit > 0) {
-            $sql .= " LIMIT " . (int)$limit;
+            $sql .= " LIMIT " . (int) $limit;
         }
 
         $stmt = $this->conn->prepare($sql);
@@ -71,9 +74,11 @@ class CandidateModel {
     /**
      * Update application status (must belong to recruiter's job)
      */
-    public function updateStatus($application_id, $status, $recruiter_id) {
+    public function updateStatus($application_id, $status, $recruiter_id)
+    {
         $allowed = ['submitted', 'reviewed', 'shortlisted', 'interview', 'rejected', 'withdrawn', 'hired'];
-        if (!in_array($status, $allowed)) return false;
+        if (!in_array($status, $allowed))
+            return false;
 
         $stmt = $this->conn->prepare(
             "UPDATE applications a
@@ -88,7 +93,8 @@ class CandidateModel {
     /**
      * Count candidates grouped by status for this recruiter
      */
-    public function getStatusCounts($recruiter_id) {
+    public function getStatusCounts($recruiter_id)
+    {
         $stmt = $this->conn->prepare(
             "SELECT a.status, COUNT(a.id) as total 
              FROM applications a
@@ -99,7 +105,7 @@ class CandidateModel {
         $stmt->bind_param("i", $recruiter_id);
         $stmt->execute();
         $result = $stmt->get_result();
-        
+
         $counts = [];
         while ($row = $result->fetch_assoc()) {
             $counts[$row['status']] = $row['total'];

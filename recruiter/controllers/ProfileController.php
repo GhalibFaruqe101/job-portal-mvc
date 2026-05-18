@@ -16,14 +16,14 @@ if ($action === 'update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    $user_id      = $_SESSION['user_id'];
-    $name         = trim($_POST['name'] ?? '');
-    $phone        = trim($_POST['phone'] ?? '');
-    $agency_name  = trim($_POST['agency_name'] ?? '');
+    $user_id = $_SESSION['user_id'];
+    $name = trim($_POST['name'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $agency_name = trim($_POST['agency_name'] ?? '');
     $specialization = trim($_POST['specialization'] ?? '');
-    $description  = trim($_POST['description'] ?? '');
-    $website      = trim($_POST['website'] ?? '');
-    $errors       = [];
+    $description = trim($_POST['description'] ?? '');
+    $website = trim($_POST['website'] ?? '');
+    $errors = [];
 
     if (empty($name) || empty($agency_name)) {
         $errors[] = "Full name and agency name are required.";

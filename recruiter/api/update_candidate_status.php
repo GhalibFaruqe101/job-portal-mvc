@@ -9,7 +9,7 @@ require_role('recruiter');
 require_once '../config/db.php';
 require_once '../models/CandidateModel.php';
 
-header('Content-Type: application/json');   
+header('Content-Type: application/json');
 
 // CSRF validation
 if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
@@ -18,8 +18,8 @@ if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
     exit();
 }
 
-$model  = new CandidateModel($conn);
-$app_id = (int)($_POST['application_id'] ?? 0);
+$model = new CandidateModel($conn);
+$app_id = (int) ($_POST['application_id'] ?? 0);
 $status = $_POST['status'] ?? '';
 
 if (!$app_id || !$status) {

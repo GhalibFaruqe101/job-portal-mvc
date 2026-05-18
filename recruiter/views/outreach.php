@@ -25,6 +25,7 @@ $statusLabels = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Outreach - JobPortal Recruiter</title>
     <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="../../public/css/recruiter/recruiter_base.css">
     <link rel="stylesheet" href="../../public/css/recruiter/dashboard.css">
     <link rel="stylesheet" href="../../public/css/recruiter/outreach.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -131,4 +132,5 @@ $statusLabels = [
 
 </body>
 </html>
+
 

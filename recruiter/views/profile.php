@@ -25,6 +25,7 @@ $avatar_src = !empty($profile['profile_pic'])
     <title>My Profile - JobPortal Recruiter</title>
     <meta name="description" content="View and edit your Recruiter profile on JobPortal.">
     <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="../../public/css/recruiter/recruiter_base.css">
     <link rel="stylesheet" href="../../public/css/recruiter/dashboard.css">
     <link rel="stylesheet" href="../../public/css/recruiter/profile.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -201,4 +202,5 @@ document.getElementById('profile_pic').addEventListener('change', function() {
 
 </body>
 </html>
+
 

@@ -1,8 +1,5 @@
 /* /public/css/recruiter/analytics.css */
 
-body { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
-.global-nav .nav-links a.active { color: #8b5cf6; font-weight: 600; }
-.global-nav .nav-links a:hover  { color: #7c3aed; }
 
 .analytics-main { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; }
 

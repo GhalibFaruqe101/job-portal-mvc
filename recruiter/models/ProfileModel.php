@@ -1,16 +1,19 @@
 <?php
 // Recruiter Module: Profile Model
-class ProfileModel {
+class ProfileModel
+{
     private $conn;
 
-    public function __construct($conn) {
+    public function __construct($conn)
+    {
         $this->conn = $conn;
     }
 
     /**
      * Get combined user + recruiter profile data
      */
-    public function getProfile($user_id) {
+    public function getProfile($user_id)
+    {
         $stmt = $this->conn->prepare(
             "SELECT u.id, u.name, u.email, u.phone, u.profile_pic,
                     rp.agency_name, rp.specialization, rp.description, rp.website
@@ -26,7 +29,8 @@ class ProfileModel {
     /**
      * Update users table fields
      */
-    public function updateUser($user_id, $name, $phone) {
+    public function updateUser($user_id, $name, $phone)
+    {
         $stmt = $this->conn->prepare(
             "UPDATE users SET name = ?, phone = ? WHERE id = ?"
         );
@@ -37,7 +41,8 @@ class ProfileModel {
     /**
      * Update or insert recruiter_profiles row
      */
-    public function updateRecruiterProfile($user_id, $agency_name, $specialization, $description, $website) {
+    public function updateRecruiterProfile($user_id, $agency_name, $specialization, $description, $website)
+    {
         // Check if profile row exists
         $check = $this->conn->prepare("SELECT id FROM recruiter_profiles WHERE user_id = ?");
         $check->bind_param("i", $user_id);
@@ -64,7 +69,8 @@ class ProfileModel {
     /**
      * Update profile picture path
      */
-    public function updateProfilePic($user_id, $pic_path) {
+    public function updateProfilePic($user_id, $pic_path)
+    {
         $stmt = $this->conn->prepare("UPDATE users SET profile_pic = ? WHERE id = ?");
         $stmt->bind_param("si", $pic_path, $user_id);
         return $stmt->execute();

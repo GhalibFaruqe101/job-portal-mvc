@@ -13,6 +13,7 @@ unset($_SESSION['auth_errors'], $_SESSION['auth_success'], $_SESSION['old_email'
     <title>Recruiter Login - JobPortal</title>
     <meta name="description" content="Log in to your Recruiter account on JobPortal to manage candidates and job placements.">
     <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="../../public/css/recruiter/recruiter_base.css">
     <link rel="stylesheet" href="../../public/css/recruiter/auth.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -123,3 +124,4 @@ unset($_SESSION['auth_errors'], $_SESSION['auth_success'], $_SESSION['old_email'
 
 </body>
 </html>
+
