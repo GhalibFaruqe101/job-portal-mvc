@@ -25,14 +25,14 @@ require __DIR__ . '/../layouts/header.php';
             </div>
             <p><?= nl2br(htmlspecialchars($o['message'])) ?></p>
             <?php if ($o['status'] === 'sent'): ?>
-            <form method="post" action="/job_portal/seeker/index.php?action=respondOutreach" style="display:inline-flex;gap:8px">
+            <form method="post" action="<?= BASE_PATH ?>/index.php?action=respondOutreach" style="display:inline-flex;gap:8px">
                 <input type="hidden" name="outreach_id" value="<?= (int)$o['id'] ?>">
                 <input type="hidden" name="status" value="responded">
                 <button type="submit" class="btn-sm">Mark as Responded</button>
             </form>
             <?php endif; ?>
             <?php if (!empty($o['job_id'])): ?>
-                <a href="/job_portal/seeker/index.php?action=jobDetail&id=<?= (int)$o['job_id'] ?>" class="btn-sm">View Job</a>
+                <a href="<?= BASE_PATH ?>/index.php?action=jobDetail&id=<?= (int)$o['job_id'] ?>" class="btn-sm">View Job</a>
             <?php endif; ?>
         </div>
         <?php endforeach; ?>

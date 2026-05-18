@@ -30,7 +30,7 @@ require __DIR__ . '/../layouts/header.php';
         </div>
 
         <!-- Save/Unsave (AJAX) -->
-        <form method="post" action="/job_portal/seeker/index.php?action=saveJob" id="save-form">
+        <form method="post" action="<?= BASE_PATH ?>/index.php?action=saveJob" id="save-form">
             <input type="hidden" name="job_id" value="<?= (int)$job['id'] ?>">
             <button type="button" id="save-btn" class="btn-outline" onclick="toggleSave(<?= (int)$job['id'] ?>)">
                 <?= $isSaved ? ' Saved' : '+ Save Job' ?>
@@ -67,7 +67,7 @@ require __DIR__ . '/../layouts/header.php';
                 <?php if (!empty($job['company_desc'])): ?><p><?= nl2br(htmlspecialchars($job['company_desc'])) ?></p><?php endif; ?>
                 <?php if (!empty($job['website'])): ?><p><a href="<?= htmlspecialchars($job['website']) ?>" target="_blank" rel="noopener">Company Website ↗</a></p><?php endif; ?>
                 <p class="muted">Posted by: <?= htmlspecialchars($job['poster_name'] ?? '—') ?></p>
-                <a href="/job_portal/seeker/index.php?action=complaint&subject_id=<?= (int)$job['employer_id'] ?>" class="muted small">
+                <a href="<?= BASE_PATH ?>/index.php?action=complaint&subject_id=<?= (int)$job['employer_id'] ?>" class="muted small">
                     Report this posting
                 </a>
             </section>
@@ -79,7 +79,7 @@ require __DIR__ . '/../layouts/header.php';
             <section class="card">
                 <h2>Apply Now</h2>
                 <?php if ($error): ?><p class="error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
-                <form method="post" action="/job_portal/seeker/index.php?action=applyJob" enctype="multipart/form-data">
+                <form method="post" action="<?= BASE_PATH ?>/index.php?action=applyJob" enctype="multipart/form-data">
                     <input type="hidden" name="job_id" value="<?= (int)$job['id'] ?>">
                     <label>Cover Letter
                         <textarea name="cover_letter" rows="5" placeholder="Introduce yourself and explain why you're a great fit…"></textarea>
@@ -100,10 +100,11 @@ require __DIR__ . '/../layouts/header.php';
 </div>
 
 <script>
+const basePath = "<?= BASE_PATH ?>";
 function toggleSave(jobId) {
     const btn = document.getElementById('save-btn');
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'index.php?action=saveJob', true);
+    xhr.open('POST', basePath + '/index.php?action=saveJob', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.onreadystatechange = function() {

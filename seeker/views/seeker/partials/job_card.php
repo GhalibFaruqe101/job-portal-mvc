@@ -7,11 +7,11 @@
 <div class="job-card <?= $job['is_featured'] ? 'featured' : '' ?>">
     <div class="job-card-top">
         <?php if (!empty($job['logo_path'])): ?>
-            <img src="/job_portal/<?= htmlspecialchars($job['logo_path']) ?>" class="company-logo" alt="">
+            <img src="<?= BASE_PATH . '/' . htmlspecialchars($job['logo_path']) ?>" class="company-logo" alt="">
         <?php endif; ?>
 
         <div style="flex:1">
-            <a href="/job_portal/seeker/index.php?action=jobDetail&id=<?= (int)$job['id'] ?>" class="job-title">
+            <a href="<?= BASE_PATH ?>/index.php?action=jobDetail&id=<?= (int)$job['id'] ?>" class="job-title">
                 <?= htmlspecialchars($job['title']) ?>
             </a>
             <p class="job-company">
@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <form method="post" action="/job_portal/seeker/index.php?action=saveJob" style="flex-shrink:0">
+        <form method="post" action="<?= BASE_PATH ?>/index.php?action=saveJob" style="flex-shrink:0">
             <input type="hidden" name="job_id" value="<?= (int)$job['id'] ?>">
             <button type="submit" class="btn-sm" title="Save job">🔖 Save</button>
         </form>
@@ -48,7 +48,7 @@
         <span class="muted">
             Deadline: <?= !empty($job['deadline']) ? date('d M Y', strtotime($job['deadline'])) : 'Open' ?>
         </span>
-        <a href="/job_portal/seeker/index.php?action=jobDetail&id=<?= (int)$job['id'] ?>" class="btn-sm">
+        <a href="<?= BASE_PATH ?>/index.php?action=jobDetail&id=<?= (int)$job['id'] ?>" class="btn-sm">
             View &amp; Apply
         </a>
     </div>
