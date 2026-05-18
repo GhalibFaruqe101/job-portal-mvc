@@ -4,7 +4,7 @@ require_once __DIR__ . '/../helpers/session.php';
 
 $action = $_GET['action'] ?? 'show';
 
-if ($action === 'users' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($action === 'register' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $company = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
@@ -18,6 +18,8 @@ if ($action === 'users' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = '';
     $website = '';
     $address = '';
+    $name = '';
+    $role = 'employer';
 
     // Validation
     if ($company && $email && $password) {

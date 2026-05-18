@@ -1,8 +1,20 @@
 <?php
 
 if (session_status() === PHP_SESSION_NONE) {
+    // Force the session cookie to be available across the entire site,
+    // not just the specific folder (like /controllers/) where it was created.
+    session_set_cookie_params([
+        'path' => '/',
+        'secure' => false, // Set to true if using HTTPS
+        'httponly' => true
+    ]);
     session_start();
 }
+
+// Prevent browser caching for all secure pages
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Cache-Control: post-check=0, pre-check=0', false);
+header('Pragma: no-cache');
 
 function require_employer_login()
 {
@@ -11,4 +23,21 @@ function require_employer_login()
         exit();
     }
 }
-?>
+
+// 2. Standard Login Check
+function is_logged_in()
+{
+    return isset($_SESSION['user_id']) && isset($_SESSION['role']);
+}
+
+// 3. Role-Based Access Control (RBAC)
+function require_role($required_role)
+{
+    if (!is_logged_in()) {
+        header("Location: ../controllers/AuthController.php?action=login");
+        exit();
+    }
+    if ($_SESSION['role'] !== $required_role) {
+        die("Access Denied: You do not have permission to view this page.");
+    }
+}
