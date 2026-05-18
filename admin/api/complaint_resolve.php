@@ -1,0 +1,31 @@
+<?php
+
+require_once __DIR__ . '/../helpers/session.php';
+require_role('admin');
+require_once __DIR__ . '/../models/AdminModel.php';
+
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['ok' => false, 'message' => 'POST request required.']);
+    exit;
+}
+if (!verify_admin_csrf($_POST['csrf_token'] ?? '')) {
+    http_response_code(403);
+    echo json_encode(['ok' => false, 'message' => 'Invalid security token.']);
+    exit;
+}
+
+$complaintId = (int)($_POST['complaint_id'] ?? 0);
+$note = trim($_POST['admin_note'] ?? '');
+
+try {
+    $model = new AdminModel();
+    $result = $model->resolveComplaint($complaintId, $note);
+    echo json_encode($result);
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'message' => $e->getMessage()]);
+}
+?>
