@@ -168,6 +168,7 @@ document.getElementById('outreachForm').addEventListener('submit', function(e) {
     formData.append('seeker_id', seekerId);
     formData.append('job_id', jobId);
     formData.append('message', message);
+    formData.append('csrf_token', '<?php echo generateCsrfToken(); ?>');
 
     fetch('../api/send_outreach.php', {
         method: 'POST',

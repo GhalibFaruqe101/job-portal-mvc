@@ -111,16 +111,16 @@ $expLevels    = ['entry' => 'Entry', 'mid' => 'Mid', 'senior' => 'Senior'];
                             <h2><?php echo htmlspecialchars($j['title']); ?></h2>
                             <p class="job-client">🏢 <?php echo htmlspecialchars($j['client_name']); ?></p>
                         </div>
-                        <span class="status-badge status-<?php echo $j['status']; ?>">
-                            <?php echo $statusLabels[$j['status']] ?? ucfirst($j['status']); ?>
+                        <span class="status-badge status-<?php echo htmlspecialchars($j['status'], ENT_QUOTES, 'UTF-8'); ?>">
+                            <?php echo htmlspecialchars($statusLabels[$j['status']] ?? ucfirst($j['status']), ENT_QUOTES, 'UTF-8'); ?>
                         </span>
                     </div>
                     <div class="job-meta">
                         <?php if ($j['location']): ?>
                             <span>📍 <?php echo htmlspecialchars($j['location']); ?></span>
                         <?php endif; ?>
-                        <span>💼 <?php echo $jobTypes[$j['job_type']] ?? $j['job_type']; ?></span>
-                        <span>📊 <?php echo $expLevels[$j['experience_level']] ?? $j['experience_level']; ?></span>
+                        <span>💼 <?php echo $jobTypes[$j['job_type']] ?? htmlspecialchars($j['job_type'], ENT_QUOTES, 'UTF-8'); ?></span>
+                        <span>📊 <?php echo $expLevels[$j['experience_level']] ?? htmlspecialchars($j['experience_level'], ENT_QUOTES, 'UTF-8'); ?></span>
                         <?php if ($j['category_name']): ?>
                             <span>🏷️ <?php echo htmlspecialchars($j['category_name']); ?></span>
                         <?php endif; ?>

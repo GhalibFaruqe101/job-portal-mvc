@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once '../helpers/session.php';
 $errors     = $_SESSION['auth_errors'] ?? [];
 $old_name   = $_SESSION['old_name'] ?? '';
 $old_email  = $_SESSION['old_email'] ?? '';
@@ -45,6 +45,7 @@ unset($_SESSION['auth_errors'], $_SESSION['old_name'], $_SESSION['old_email'],
         <?php endif; ?>
 
         <form id="registerForm" class="auth-form" action="../controllers/AuthController.php?action=register" method="POST">
+            <?php echo csrfInput(); ?>
             <div class="form-group">
                 <label for="name">Full Name</label>
                 <input type="text" id="name" name="name" class="form-control"

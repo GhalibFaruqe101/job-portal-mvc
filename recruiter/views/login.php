@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once '../helpers/session.php';
 $errors    = $_SESSION['auth_errors'] ?? [];
 $success   = $_SESSION['auth_success'] ?? '';
 $old_email = $_SESSION['old_email'] ?? '';
@@ -92,6 +92,7 @@ unset($_SESSION['auth_errors'], $_SESSION['auth_success'], $_SESSION['old_email'
         <?php endif; ?>
 
         <form class="auth-form" action="../controllers/AuthController.php?action=login" method="POST">
+            <?php echo csrfInput(); ?>
             <div class="form-group">
                 <label for="email">Email Address</label>
                 <input type="email" id="email" name="email" class="form-control"

@@ -119,7 +119,7 @@ $statusLabels = [
                                 <td>
                                     <div class="message-snippet" title="<?php echo htmlspecialchars($m['message']); ?>">
                                         <?php 
-                                            $snippet = strlen($m['message']) > 50 ? substr($m['message'], 0, 50) . '...' : $m['message'];
+                                            $snippet = mb_strlen($m['message'], 'UTF-8') > 50 ? mb_substr($m['message'], 0, 50, 'UTF-8') . '...' : $m['message'];
                                             echo htmlspecialchars($snippet);
                                         ?>
                                     </div>
@@ -128,7 +128,7 @@ $statusLabels = [
                                     <?php echo date('d M Y, h:i A', strtotime($m['sent_at'])); ?>
                                 </td>
                                 <td>
-                                    <span class="status-badge status-<?php echo $m['status']; ?>">
+                                    <span class="status-badge status-<?php echo htmlspecialchars($m['status'], ENT_QUOTES, 'UTF-8'); ?>">
                                         <?php echo $statusLabels[$m['status']] ?? ucfirst($m['status']); ?>
                                     </span>
                                 </td>
