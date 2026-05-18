@@ -42,6 +42,8 @@ function handleLogin($userModel) {
         if ($user && $user['role'] === 'recruiter' && $userModel->verifyPassword($password, $user['password_hash'])) {
             if (!$user['is_active']) {
                 $errors[] = "Your account has been deactivated. Contact support.";
+            } elseif (!$user['is_verified']) {
+                $errors[] = "Your account is pending admin approval. Please wait for verification.";
             } else {
                 // Mandatory session keys (team contract)
                 $_SESSION['user_id']   = $user['id'];
