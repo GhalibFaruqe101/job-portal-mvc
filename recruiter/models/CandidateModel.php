@@ -11,7 +11,7 @@ class CandidateModel {
      * Get all applications for jobs posted by this recruiter
      * Optionally filter by job_id, status, or search keyword
      */
-    public function getRecruiterCandidates($recruiter_id, $job_id = '', $status = '', $search = '') {
+    public function getRecruiterCandidates($recruiter_id, $job_id = '', $status = '', $search = '', $limit = 0) {
         $sql = "SELECT 
                     a.id           AS application_id,
                     a.status       AS app_status,
@@ -57,6 +57,10 @@ class CandidateModel {
         }
 
         $sql .= " GROUP BY a.id ORDER BY a.applied_at DESC";
+
+        if ($limit > 0) {
+            $sql .= " LIMIT " . (int)$limit;
+        }
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param($types, ...$params);
