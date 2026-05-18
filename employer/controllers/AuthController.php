@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../helpers/session.php';
+require_once __DIR__ . '/../config/db.php';
 
 // Simple router based on query param 'action'
 $action = $_GET['action'] ?? 'login';
@@ -30,11 +30,14 @@ if ($action === 'login' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
             header('Location: ../views/dashboard.php');
             exit();
+        } else {
+            $error = 'Incorrect password.';
         }
+    } else {
+        $error = 'No employer account found with that email.';
     }
-
-    $error = 'Invalid credentials.';
 }
+
 
 // Render requested view
 switch ($action) {
