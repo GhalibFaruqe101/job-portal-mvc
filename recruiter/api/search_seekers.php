@@ -24,11 +24,7 @@ if ($salary_max !== '' && !is_numeric($salary_max)) {
     $salary_max = '';
 }
 
-// If nothing searched, return empty
-if ($keyword === '' && $exp_min === '' && $location === '' && $salary_max === '') {
-    echo json_encode([]);
-    exit();
-}
+// If nothing searched, we'll just return the latest 50 seekers (handled by LIMIT in model)
 
 $results = $model->searchSeekers($keyword, $exp_min, $location, $salary_max);
 

@@ -14,7 +14,7 @@ class SeekerModel {
         $sql = "SELECT u.id AS seeker_id, u.name, u.email, u.phone, u.profile_pic,
                        sp.headline, sp.skills, sp.years_experience, sp.expected_salary, sp.preferred_location
                 FROM users u
-                INNER JOIN seeker_profiles sp ON u.id = sp.user_id
+                LEFT JOIN seeker_profiles sp ON u.id = sp.user_id
                 WHERE u.role = 'seeker' AND u.is_active = 1";
 
         $params = [];
@@ -70,7 +70,7 @@ class SeekerModel {
                     sp.headline, sp.summary, sp.skills, sp.years_experience, 
                     sp.education_level, sp.expected_salary, sp.preferred_location, sp.resume_path
              FROM users u
-             INNER JOIN seeker_profiles sp ON u.id = sp.user_id
+             LEFT JOIN seeker_profiles sp ON u.id = sp.user_id
              WHERE u.id = ? AND u.role = 'seeker'"
         );
         $stmt->bind_param("i", $seeker_id);
