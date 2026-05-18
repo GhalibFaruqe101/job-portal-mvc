@@ -36,7 +36,7 @@ require_once '../config/db.php';
                 <h1>Welcome, <?php echo htmlspecialchars($_SESSION['user_name']); ?>! 👋</h1>
                 <p>Here's what's happening with your talent pipeline today.</p>
             </div>
-            <button class="btn-primary" style="background: linear-gradient(135deg, #7c3aed, #6d28d9);">+ New Placement</button>
+            <a href="candidates.php" class="btn-primary" style="background: linear-gradient(135deg, #7c3aed, #6d28d9); text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 8px; color: white; display: inline-block; font-weight: 600;">+ New Placement</a>
         </header>
 
         <section class="stats-grid">
@@ -101,9 +101,9 @@ require_once '../config/db.php';
             <div class="card quick-actions">
                 <h2>Quick Actions</h2>
                 <div class="action-buttons">
-                    <button class="action-btn">Search Candidates</button>
-                    <button class="action-btn">Message Client</button>
-                    <button class="action-btn">View Pipeline</button>
+                    <a href="candidates.php" class="action-btn" style="text-decoration: none; display: block;">Search Candidates</a>
+                    <a href="clients.php" class="action-btn" style="text-decoration: none; display: block;">Message Client</a>
+                    <a href="candidates.php" class="action-btn" style="text-decoration: none; display: block;">View Pipeline</a>
                 </div>
             </div>
         </div>
