@@ -18,34 +18,34 @@ class SeekerController {
         $public = ['login','register','doLogin','doRegister'];
         if (!in_array($action, $public)) $this->requireAuth();
         match($action) {
-            'register'        => $this->showRegister(),
-            'doRegister'      => $this->doRegister(),
-            'login'           => $this->showLogin(),
-            'doLogin'         => $this->doLogin(),
-            'logout'          => $this->doLogout(),
-            'dashboard'       => $this->showDashboard(),
-            'profile'         => $this->showProfile(),
-            'editProfile'     => $this->showEditProfile(),
-            'saveProfile'     => $this->saveProfile(),
-            'uploadResume'    => $this->uploadResume(),
-            'uploadPic'       => $this->uploadPic(),
-            'jobs'            => $this->showJobs(),
-            'jobDetail'       => $this->showJobDetail(),
-            'applyJob'        => $this->applyJob(),
-            'withdraw'        => $this->withdrawApplication(),
-            'applications'    => $this->showApplications(),
-            'saveJob'         => $this->toggleSaveJob(),
-            'savedJobs'       => $this->showSavedJobs(),
-            'alerts'          => $this->showAlerts(),
-            'createAlert'     => $this->createAlert(),
-            'deleteAlert'     => $this->deleteAlert(),
-            'messages'        => $this->showMessages(),
-            'sendMessage'     => $this->sendMessage(),
-            'outreach'        => $this->showOutreach(),
-            'respondOutreach' => $this->respondOutreach(),
-            'complaint'       => $this->showComplaintForm(),
-            'submitComplaint' => $this->submitComplaint(),
-            default           => $this->notFound(),
+            'register'         => $this->showRegister(),
+            'doRegister'       => $this->doRegister(),
+            'login'            => $this->showLogin(),
+            'doLogin'          => $this->doLogin(),
+            'logout'           => $this->doLogout(),
+            'dashboard'        => $this->showDashboard(),
+            'profile'          => $this->showProfile(),
+            'editProfile'      => $this->showEditProfile(),
+            'saveProfile'      => $this->saveProfile(),
+            'uploadResume'     => $this->uploadResume(),
+            'uploadPic'        => $this->uploadPic(),
+            'jobs'             => $this->showJobs(),
+            'jobDetail'        => $this->showJobDetail(),
+            'applyJob'         => $this->applyJob(),
+            'withdraw'         => $this->withdrawApplication(),
+            'applications'     => $this->showApplications(),
+            'saveJob'          => $this->toggleSaveJob(),
+            'savedJobs'        => $this->showSavedJobs(),
+            'alerts'           => $this->showAlerts(),
+            'createAlert'      => $this->createAlert(),
+            'deleteAlert'      => $this->deleteAlert(),
+            'messages'         => $this->showMessages(),
+            'sendMessage'      => $this->sendMessage(),
+            'outreach'         => $this->showOutreach(),
+            'respondOutreach'  => $this->respondOutreach(),
+            'complaint'        => $this->showComplaintForm(),
+            'submitComplaint'  => $this->submitComplaint(),
+            default            => $this->notFound(),
         };
     }
 
@@ -90,7 +90,6 @@ class SeekerController {
         $hash = password_hash($pass, PASSWORD_BCRYPT);
         $userId = $this->model->registerUser($name, $email, $phone, $hash);
         if ($userId) {
-            // Auto-login after registration (is_verified=0; add email flow later if needed)
             $_SESSION['user_id'] = $userId; $_SESSION['role'] = 'seeker'; $_SESSION['name'] = $name;
             header('Location: index.php?action=dashboard'); exit;
         }
@@ -242,18 +241,18 @@ class SeekerController {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: index.php?action=jobs'); exit; }
         $this->verifyCsrf();
         $uid  = $this->userId();
-        $jid  = (int)($_POST['job_id'] ?? 0);
+        $jid  = (int)$_POST['job_id'] ?? 0;
         $cv   = trim($_POST['cover_letter'] ?? '');
         $job  = $this->model->getJobById($jid);
         $back = fn($msg) => $this->redirectWithFlash($msg, 'index.php?action=jobDetail&id='.$jid);
         if (!$job)                                                      { $this->notFound(); return; }
         if ($job['deadline'] && strtotime($job['deadline']) < time())   { $back('Application deadline has passed.'); return; }
         if ($this->model->hasActiveApplication($uid, $jid))             { $back('You have already applied to this job.'); return; }
-        // Resume
+        
         $resumePath = '';
         if (!empty($_FILES['resume']['name'])) {
             $f = $_FILES['resume'];
-            if ($f['error'] !== UPLOAD_ERR_OK)                              { $back('Resume upload error.'); return; }
+            if ($f['error'] !== UPLOAD_ERR_OK)                             { $back('Resume upload error.'); return; }
             if ($f['size'] > self::MAX_RESUME_SIZE)                         { $back('Resume must be under 5 MB.'); return; }
             if (mime_content_type($f['tmp_name']) !== 'application/pdf')    { $back('Resume must be a PDF.'); return; }
             if (!is_dir(self::UPLOAD_DIR_RESUME)) mkdir(self::UPLOAD_DIR_RESUME, 0755, true);
@@ -295,7 +294,7 @@ class SeekerController {
             $_SESSION['flash']='Job not found.'; header('Location: index.php?action=savedJobs'); exit;
         }
         if ($this->model->isJobSaved($uid, $jid)) { $this->model->unsaveJob($uid,$jid); $saved=false; }
-        else                                       { $this->model->saveJob($uid,$jid);   $saved=true;  }
+        else                                      { $this->model->saveJob($uid,$jid);   $saved=true;  }
         if ($this->isAjax()) { header('Content-Type: application/json'); echo json_encode(['saved'=>$saved]); exit; }
         header('Location: '.($_SERVER['HTTP_REFERER'] ?? 'index.php?action=savedJobs')); exit;
     }
@@ -340,7 +339,6 @@ class SeekerController {
         $aid = (int)($_POST['application_id'] ?? 0);
         $body = trim($_POST['body'] ?? '');
         if (!$body || !$rid) { $_SESSION['flash']='Message and recipient required.'; header('Location: index.php?action=messages'); exit; }
-        // IDOR fix: verify application belongs to this seeker & recipient is its employer
         if ($aid > 0 && !$this->model->verifyApplicationOwnership($aid, $this->userId(), $rid)) {
             http_response_code(403); die('<h1>403 Forbidden</h1>');
         }
@@ -350,7 +348,11 @@ class SeekerController {
 
     // ── Outreach ──────────────────────────────────────────────────────────────
     private function showOutreach(): void {
-        $this->render('seeker/outreach', ['outreach'=>$this->model->getRecruiterOutreach($this->userId()), 'csrf'=>$this->csrfToken()]);
+        // Here the variable name correctly matches your view's $outreach_messages loop
+        $this->render('seeker/outreach', [
+            'outreach_messages' => $this->model->getRecruiterOutreach($this->userId()), 
+            'csrf'              => $this->csrfToken()
+        ]);
     }
     private function respondOutreach(): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: index.php?action=outreach'); exit; }
