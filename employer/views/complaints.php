@@ -4,6 +4,7 @@ require_role('employer');
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@ require_role('employer');
     <link rel="stylesheet" href="../../public/css/style.css">
     <link rel="stylesheet" href="../../public/css/employer/dashboard.css">
 </head>
+
 <body>
     <nav class="global-nav">
         <a href="dashboard.php" class="logo">JobPortal</a>
@@ -28,11 +30,12 @@ require_role('employer');
     <main style="padding: 2rem 5%;">
         <div class="card">
             <h1>Platform Abuse & Grievance Logs</h1>
-            <p>Track submitted complaints and formal reports regarding seekers or recruiters. Administrative reviews are logged here.</p>
+            <p>Track submitted complaints and formal reports regarding recruiters..</p>
 
             <?php if (empty($complaints)): ?>
-                <div style="margin-top: 2rem; background-color: #f8f9fa; padding: 2.5rem; text-align: center; border-radius: 4px;">
-                    <p style="color: #6c757d; font-size: 1.1rem; font-weight: 500;">You have not filed any formal complaints yet.</p>
+                <div
+                    style="margin-top: 2rem; background-color: #f8f9fa; padding: 2.5rem; text-align: center; border-radius: 4px;">
+                    <p style="color: #6c757d; font-size: 1.1rem; font-weight: 500;"> No formal complaints yet.</p>
                 </div>
             <?php else: ?>
                 <table style="width: 100%; border-collapse: collapse; margin-top: 2rem;">
@@ -49,12 +52,17 @@ require_role('employer');
                     <tbody>
                         <?php foreach ($complaints as $comp): ?>
                             <tr style="border-bottom: 1px solid #eee;">
-                                <td style="padding: 1rem; font-weight: bold;"><?php echo htmlspecialchars($comp['subject_name']); ?></td>
-                                <td style="padding: 1rem;"><span style="background-color: #e9ecef; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.85rem; font-weight: bold;"><?php echo ucfirst($comp['subject_role']); ?></span></td>
-                                <td style="padding: 1rem; max-width: 300px;"><?php echo htmlspecialchars($comp['description']); ?></td>
+                                <td style="padding: 1rem; font-weight: bold;">
+                                    <?php echo htmlspecialchars($comp['subject_name']); ?></td>
+                                <td style="padding: 1rem;"><span
+                                        style="background-color: #e9ecef; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.85rem; font-weight: bold;"><?php echo ucfirst($comp['subject_role']); ?></span>
+                                </td>
+                                <td style="padding: 1rem; max-width: 300px;">
+                                    <?php echo htmlspecialchars($comp['description']); ?></td>
                                 <td style="padding: 1rem;"><?php echo date('M d, Y', strtotime($comp['created_at'])); ?></td>
                                 <td style="padding: 1rem;">
-                                    <span class="badge badge-<?php echo $comp['status'] === 'resolved' ? 'success' : 'warning'; ?>">
+                                    <span
+                                        class="badge badge-<?php echo $comp['status'] === 'resolved' ? 'success' : 'warning'; ?>">
                                         <?php echo ucfirst($comp['status']); ?>
                                     </span>
                                 </td>
@@ -69,4 +77,5 @@ require_role('employer');
         </div>
     </main>
 </body>
+
 </html>

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +13,7 @@
     <nav class="global-nav">
         <a href="dashboard.php" class="logo">JobPortal</a>
         <div class="nav-links">
-            <a href="AuthController.php?action=login">Login</a>
+            <a href="../controllers/AuthController.php?action=login">Login</a>
         </div>
     </nav>
 
@@ -28,8 +27,7 @@
                 We will review your account details and approve shortly.
             </p>
             <div style="margin-top: 2rem;">
-                <a href="login.php" class="btn-primary" style="text-decoration: none;">Go to
-                    Login</a>
+                <a href="../controllers/AuthController.php?action=login" class="btn-primary" style="text-decoration: none;">Go to Login</a>
             </div>
         </div>
     </main>
