@@ -1,6 +1,13 @@
 <?php
 
 if (session_status() === PHP_SESSION_NONE) {
+    // Force the session cookie to be available across the entire site,
+    // not just the specific folder (like /controllers/) where it was created.
+    session_set_cookie_params([
+        'path' => '/',
+        'secure' => false, // Set to true if using HTTPS
+        'httponly' => true
+    ]);
     session_start();
 }
 
@@ -34,4 +41,3 @@ function require_role($required_role)
         die("Access Denied: You do not have permission to view this page.");
     }
 }
-?>
