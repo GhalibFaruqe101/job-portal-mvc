@@ -7,7 +7,8 @@ require __DIR__ . '/../layouts/header.php';
 <div class="container">
     <h1>Edit Profile</h1>
     <?php if ($error): ?><p class="error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
-    <form method="post" action="<?= BASE_PATH ?>/index.php?action=saveProfile" class="profile-form">
+    <form method="post" action="index.php?action=saveProfile" class="profile-form">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf ?? '') ?>">
         <label>Headline *
             <input type="text" name="headline" required
                    value="<?= htmlspecialchars($profile['headline'] ?? '') ?>"
@@ -47,7 +48,7 @@ require __DIR__ . '/../layouts/header.php';
         </label>
         <div class="form-actions">
             <button type="submit" class="btn">Save Profile</button>
-            <a href="<?= BASE_PATH ?>/index.php?action=profile" class="btn-outline">Cancel</a>
+            <a href="index.php?action=profile" class="btn-outline">Cancel</a>
         </div>
     </form>
 </div>

@@ -23,7 +23,8 @@ require __DIR__ . '/../layouts/header.php';
             <!-- Reply -->
             <details class="reply-toggle">
                 <summary class="btn-sm">Reply</summary>
-                <form method="post" action="<?= BASE_PATH ?>/index.php?action=sendMessage" class="reply-form">
+                <form method="post" action="index.php?action=sendMessage" class="reply-form">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf ?? '') ?>">
                     <input type="hidden" name="recipient_id" value="<?= (int)$msg['sender_id'] ?>">
                     <input type="hidden" name="application_id" value="<?= (int)($msg['application_id'] ?? 0) ?>">
                     <textarea name="body" rows="3" placeholder="Write your reply…" required></textarea>

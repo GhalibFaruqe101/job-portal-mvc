@@ -5,476 +5,387 @@ require_once __DIR__ . '/../config/db.php';
 
 class SeekerModel {
 
-    //  AUTH 
-    public function registerUser(string $name, string $email, string $phone, string $passwordHash): int|false {
+    // ── Auth ──────────────────────────────────────────────────────────────────
+
+    public function registerUser(string $name, string $email, string $phone, string $hash): int|false {
         $db = getDB();
-        $stmt = $db->prepare(
-            "INSERT INTO users (name, email, password_hash, phone, role, is_active, is_verified, created_at)
-             VALUES (?, ?, ?, ?, 'seeker', 1, 0, NOW())"
-        );
-        $stmt->bind_param('ssss', $name, $email, $passwordHash, $phone);
-        if ($stmt->execute()) {
-            return $db->insert_id;
-        }
-        return false;
+        $s = $db->prepare("INSERT INTO users (name,email,password_hash,phone,role,is_active,is_verified,created_at)
+                           VALUES (?,?,?,?,'seeker',1,0,NOW())");
+        $s->bind_param('ssss', $name, $email, $hash, $phone);
+        return $s->execute() ? $db->insert_id : false;
     }
 
     public function getUserByEmail(string $email): array|null {
         $db = getDB();
-        $stmt = $db->prepare("SELECT * FROM users WHERE email = ? AND role = 'seeker' LIMIT 1");
-        $stmt->bind_param('s', $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc() ?: null;
+        $s = $db->prepare("SELECT * FROM users WHERE email=? AND role='seeker' LIMIT 1");
+        $s->bind_param('s', $email); $s->execute();
+        return $s->get_result()->fetch_assoc() ?: null;
     }
 
-    public function getUserById(int $userId): array|null {
+    public function getUserById(int $id): array|null {
         $db = getDB();
-        $stmt = $db->prepare("SELECT * FROM users WHERE id = ? LIMIT 1");
-        $stmt->bind_param('i', $userId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc() ?: null;
+        $s = $db->prepare("SELECT * FROM users WHERE id=? LIMIT 1");
+        $s->bind_param('i', $id); $s->execute();
+        return $s->get_result()->fetch_assoc() ?: null;
     }
 
     public function emailExists(string $email): bool {
         $db = getDB();
-        $stmt = $db->prepare("SELECT id FROM users WHERE email = ? LIMIT 1");
-        $stmt->bind_param('s', $email);
-        $stmt->execute();
-        $stmt->store_result();
-        return $stmt->num_rows > 0;
+        $s = $db->prepare("SELECT id FROM users WHERE email=? LIMIT 1");
+        $s->bind_param('s', $email); $s->execute(); $s->store_result();
+        return $s->num_rows > 0;
     }
 
-    // ─── SEEKER PROFILE
+    // ── Seeker Profile ────────────────────────────────────────────────────────
 
-    public function getSeekerProfile(int $userId): array|null {
+    public function getSeekerProfile(int $uid): array|null {
         $db = getDB();
-        
-        $stmt = $db->prepare("SELECT * FROM seeker_profiles WHERE user_id = ? ORDER BY id DESC LIMIT 1");
-        $stmt->bind_param('i', $userId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc() ?: null;
+        $s = $db->prepare("SELECT * FROM seeker_profiles WHERE user_id=? LIMIT 1");
+        $s->bind_param('i', $uid); $s->execute();
+        return $s->get_result()->fetch_assoc() ?: null;
     }
 
     public function upsertSeekerProfile(
-        int $userId,
-        string $headline,
-        string $summary,
-        string $skills,
-        int $yearsExp,
-        string $educationLevel,
-        float $currentSalary,
-        float $expectedSalary,
-        string $preferredLocation,
-        string $resumePath = ''
+        int $uid, string $headline, string $summary, string $skills,
+        int $yrs, string $edu, float $curr, float $exp, string $loc, string $resume=''
     ): bool {
         $db = getDB();
-     
-        $stmt = $db->prepare(
+        $s = $db->prepare(
             "INSERT INTO seeker_profiles
-                (user_id, headline, summary, skills, years_experience, education_level,
-                 current_salary, expected_salary, preferred_location, resume_path)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+               (user_id,headline,summary,skills,years_experience,education_level,
+                current_salary,expected_salary,preferred_location,resume_path)
+             VALUES (?,?,?,?,?,?,?,?,?,?)
              ON DUPLICATE KEY UPDATE
-                headline = VALUES(headline),
-                summary = VALUES(summary),
-                skills = VALUES(skills),
-                years_experience = VALUES(years_experience),
-                education_level = VALUES(education_level),
-                current_salary = VALUES(current_salary),
-                expected_salary = VALUES(expected_salary),
-                preferred_location = VALUES(preferred_location),
-                resume_path = IF(VALUES(resume_path) != '', VALUES(resume_path), resume_path)"
+               headline=VALUES(headline), summary=VALUES(summary),
+               skills=VALUES(skills), years_experience=VALUES(years_experience),
+               education_level=VALUES(education_level),
+               current_salary=VALUES(current_salary),
+               expected_salary=VALUES(expected_salary),
+               preferred_location=VALUES(preferred_location),
+               resume_path=IF(VALUES(resume_path)!='',VALUES(resume_path),resume_path)"
         );
-        
-        $stmt->bind_param('isssisddss', $userId, $headline, $summary, $skills, $yearsExp,
-            $educationLevel, $currentSalary, $expectedSalary, $preferredLocation, $resumePath);
-        return $stmt->execute();
+       
+        $s->bind_param('isssissdss', $uid, $headline, $summary, $skills, $yrs, $edu, $curr, $exp, $loc, $resume);
+        return $s->execute();
     }
 
-    public function updateProfilePic(int $userId, string $picPath): bool {
+    public function updateProfilePic(int $uid, string $path): bool {
         $db = getDB();
-        $stmt = $db->prepare("UPDATE users SET profile_pic = ? WHERE id = ?");
-        $stmt->bind_param('si', $picPath, $userId);
-        return $stmt->execute();
+        $s = $db->prepare("UPDATE users SET profile_pic=? WHERE id=?");
+        $s->bind_param('si', $path, $uid); return $s->execute();
     }
 
-    public function updateResumePath(int $userId, string $resumePath): bool {
+    public function updateResumePath(int $uid, string $path): bool {
         $db = getDB();
-        
-        $stmt = $db->prepare(
-            "INSERT INTO seeker_profiles (user_id, resume_path, headline, summary, skills, preferred_location) 
-             VALUES (?, ?, '', '', '', '') 
-             ON DUPLICATE KEY UPDATE resume_path = VALUES(resume_path)"
-        );
-        $stmt->bind_param('is', $userId, $resumePath);
-        return $stmt->execute();
+        $s = $db->prepare("UPDATE seeker_profiles SET resume_path=? WHERE user_id=?");
+        $s->bind_param('si', $path, $uid); return $s->execute();
     }
 
+    // ── Job Search  
+
+    private const PER_PAGE = 10;
 
     public function searchJobs(
-        string $keyword = '',
-        int $categoryId = 0,
-        string $location = '',
-        string $jobType = '',
-        string $experienceLevel = '',
-        float $salaryMin = 0,
-        float $salaryMax = 0
+        string $kw='', int $catId=0, string $loc='', string $type='',
+        string $lvl='', float $salMin=0, float $salMax=0, int $page=1
     ): array {
-        $db = getDB();
+        $db     = getDB();
+        $offset = ($page - 1) * self::PER_PAGE;
+        $limit  = self::PER_PAGE;
 
-        $sql = "SELECT j.*, c.name AS category_name,
-                       ep.company_name, ep.logo_path,
-                       u.name AS poster_name,
-                       rp.agency_name
-                FROM jobs j
-                LEFT JOIN categories c ON j.category_id = c.id
-                LEFT JOIN employer_profiles ep ON j.employer_id = ep.user_id
-                LEFT JOIN users u ON j.employer_id = u.id
-                LEFT JOIN recruiter_profiles rp ON j.recruiter_id = rp.user_id
-                WHERE j.status = 'active'";
+        $base = "FROM jobs j
+                 LEFT JOIN categories c       ON j.category_id = c.id
+                 LEFT JOIN employer_profiles ep ON j.employer_id = ep.user_id
+                 LEFT JOIN users u             ON j.employer_id = u.id
+                 LEFT JOIN recruiter_profiles rp ON j.recruiter_id = rp.user_id
+                 WHERE j.status='active'";
 
-        $params = [];
-        $types  = '';
+        $params = []; $types = '';
 
-        if ($keyword !== '') {
-            $kw = '%' . $keyword . '%';
-            $sql .= " AND (j.title LIKE ? OR j.description LIKE ? OR ep.company_name LIKE ?)";
-            $params[] = $kw; $params[] = $kw; $params[] = $kw;
-            $types .= 'sss';
+        if ($kw !== '') {
+            $w = '%'.$kw.'%';
+            $base .= " AND (j.title LIKE ? OR j.description LIKE ? OR ep.company_name LIKE ?)";
+            $params[] = $w; $params[] = $w; $params[] = $w; $types .= 'sss';
         }
-        if ($categoryId > 0) {
-            $sql .= " AND j.category_id = ?";
-            $params[] = $categoryId;
-            $types .= 'i';
-        }
-        if ($location !== '') {
-            $loc = '%' . $location . '%';
-            $sql .= " AND j.location LIKE ?";
-            $params[] = $loc;
-            $types .= 's';
-        }
-        if ($jobType !== '') {
-            $sql .= " AND j.job_type = ?";
-            $params[] = $jobType;
-            $types .= 's';
-        }
-        if ($experienceLevel !== '') {
-            $sql .= " AND j.experience_level = ?";
-            $params[] = $experienceLevel;
-            $types .= 's';
-        }
-        if ($salaryMin > 0) {
-            $sql .= " AND j.salary_max >= ?";
-            $params[] = $salaryMin;
-            $types .= 'd';
-        }
-        if ($salaryMax > 0) {
-            $sql .= " AND j.salary_min <= ?";
-            $params[] = $salaryMax;
-            $types .= 'd';
-        }
+        if ($catId > 0)  { $base .= " AND j.category_id=?";      $params[]=$catId;  $types.='i'; }
+        if ($loc !== '')  { $l='%'.$loc.'%'; $base.=" AND j.location LIKE ?"; $params[]=$l; $types.='s'; }
+        if ($type !== '') { $base .= " AND j.job_type=?";          $params[]=$type;  $types.='s'; }
+        if ($lvl !== '')  { $base .= " AND j.experience_level=?";  $params[]=$lvl;   $types.='s'; }
+        if ($salMin > 0)  { $base .= " AND j.salary_max>=?";       $params[]=$salMin;$types.='d'; }
+        if ($salMax > 0)  { $base .= " AND j.salary_min<=?";       $params[]=$salMax;$types.='d'; }
 
-        $sql .= " ORDER BY j.is_featured DESC, j.created_at DESC";
+        // Count query
+        $countSql = "SELECT COUNT(*) ".$base;
+        $cs = $db->prepare($countSql);
+        if ($params) $cs->bind_param($types, ...$params);
+        $cs->execute(); $cs->bind_result($total); $cs->fetch(); $cs->close();
 
-        $stmt = $db->prepare($sql);
-        if (!empty($params)) {
-            $stmt->bind_param($types, ...$params);
-        }
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        // Data query
+        $dataSql = "SELECT j.*,c.name AS category_name,
+                    ep.company_name,ep.logo_path,ep.description AS company_desc,
+                    ep.website,ep.address,ep.industry,u.name AS poster_name,rp.agency_name
+                    ".$base." ORDER BY j.is_featured DESC, j.created_at DESC
+                    LIMIT ? OFFSET ?";
+        $ds = $db->prepare($dataSql);
+        $allParams = $params; $allParams[]=$limit; $allParams[]=$offset;
+        $allTypes  = $types.'ii';
+        if ($allParams) $ds->bind_param($allTypes, ...$allParams);
+        $ds->execute();
+        $rows = $ds->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        return [$rows, (int)$total];
     }
 
-    public function getJobById(int $jobId): array|null {
+    public function getJobById(int $id): array|null {
         $db = getDB();
-        $stmt = $db->prepare(
-            "SELECT j.*, c.name AS category_name,
-                    ep.company_name, ep.logo_path, ep.description AS company_desc,
-                    ep.website, ep.address, ep.industry,
-                    u.name AS poster_name,
-                    rp.agency_name
+        $s = $db->prepare(
+            "SELECT j.*,c.name AS category_name,
+             ep.company_name,ep.logo_path,ep.description AS company_desc,
+             ep.website,ep.address,ep.industry,u.name AS poster_name,rp.agency_name
              FROM jobs j
-             LEFT JOIN categories c ON j.category_id = c.id
-             LEFT JOIN employer_profiles ep ON j.employer_id = ep.user_id
-             LEFT JOIN users u ON j.employer_id = u.id
-             LEFT JOIN recruiter_profiles rp ON j.recruiter_id = rp.user_id
-             WHERE j.id = ? AND j.status = 'active'
-             LIMIT 1"
+             LEFT JOIN categories c ON j.category_id=c.id
+             LEFT JOIN employer_profiles ep ON j.employer_id=ep.user_id
+             LEFT JOIN users u ON j.employer_id=u.id
+             LEFT JOIN recruiter_profiles rp ON j.recruiter_id=rp.user_id
+             WHERE j.id=? AND j.status='active' LIMIT 1"
         );
-        $stmt->bind_param('i', $jobId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc() ?: null;
+        $s->bind_param('i',$id); $s->execute();
+        return $s->get_result()->fetch_assoc() ?: null;
     }
 
     public function getCategories(): array {
-        $db = getDB();
-        $result = $db->query("SELECT * FROM categories ORDER BY name ASC");
-        return $result->fetch_all(MYSQLI_ASSOC);
+        return getDB()->query("SELECT * FROM categories ORDER BY name ASC")->fetch_all(MYSQLI_ASSOC);
     }
 
-    // ─── APPLICATIONS 
-    public function hasApplied(int $seekerId, int $jobId): bool {
+    // ── Applications ──────────────────────────────────────────────────────────
+
+
+    public function hasActiveApplication(int $seekerId, int $jobId): bool {
         $db = getDB();
-        $stmt = $db->prepare(
-            "SELECT id FROM applications WHERE job_id = ? AND seeker_id = ? LIMIT 1"
+        $s = $db->prepare(
+            "SELECT id FROM applications
+             WHERE job_id=? AND seeker_id=? AND status != 'withdrawn'
+             LIMIT 1"
         );
-        $stmt->bind_param('ii', $jobId, $seekerId);
-        $stmt->execute();
-        $stmt->store_result();
-        return $stmt->num_rows > 0;
+        $s->bind_param('ii',$jobId,$seekerId); $s->execute(); $s->store_result();
+        return $s->num_rows > 0;
     }
 
-    public function applyToJob(
-        int $seekerId,
-        int $jobId,
-        string $coverLetter,
-        string $resumePath
-    ): int|false {
+    public function applyToJob(int $uid, int $jid, string $cv, string $resume): int|false {
         $db = getDB();
-        $stmt = $db->prepare(
-            "INSERT INTO applications (job_id, seeker_id, cover_letter, resume_path, status, applied_at)
-             VALUES (?, ?, ?, ?, 'submitted', NOW())"
+        $s = $db->prepare(
+            "INSERT INTO applications (job_id,seeker_id,cover_letter,resume_path,status,applied_at)
+             VALUES (?,?,?,?,'submitted',NOW())"
         );
-        $stmt->bind_param('iiss', $jobId, $seekerId, $coverLetter, $resumePath);
-        if ($stmt->execute()) {
-            return $db->insert_id;
-        }
-        return false;
+        $s->bind_param('iiss',$jid,$uid,$cv,$resume);
+        return $s->execute() ? $db->insert_id : false;
     }
 
-    public function getApplicationsBySeeker(int $seekerId): array {
+    public function getApplicationsBySeeker(int $uid): array {
         $db = getDB();
-        $stmt = $db->prepare(
-            "SELECT a.*, j.title AS job_title, j.location,
-                    ep.company_name, ep.logo_path
+        $s = $db->prepare(
+            "SELECT a.*,j.title AS job_title,j.location,ep.company_name,ep.logo_path
              FROM applications a
-             JOIN jobs j ON a.job_id = j.id
-             LEFT JOIN employer_profiles ep ON j.employer_id = ep.user_id
-             WHERE a.seeker_id = ?
-             ORDER BY a.applied_at DESC"
+             JOIN jobs j ON a.job_id=j.id
+             LEFT JOIN employer_profiles ep ON j.employer_id=ep.user_id
+             WHERE a.seeker_id=? ORDER BY a.applied_at DESC"
         );
-        $stmt->bind_param('i', $seekerId);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $s->bind_param('i',$uid); $s->execute();
+        return $s->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function withdrawApplication(int $applicationId, int $seekerId): bool {
+    public function withdrawApplication(int $appId, int $uid): bool {
         $db = getDB();
-        // Only withdraw if status is still 'submitted'
-        $stmt = $db->prepare(
-            "UPDATE applications
-             SET status = 'withdrawn'
-             WHERE id = ? AND seeker_id = ? AND status = 'submitted'"
+        $s = $db->prepare(
+            "UPDATE applications SET status='withdrawn'
+             WHERE id=? AND seeker_id=? AND status='submitted'"
         );
-        $stmt->bind_param('ii', $applicationId, $seekerId);
-        $stmt->execute();
-        return $stmt->affected_rows > 0;
+        $s->bind_param('ii',$appId,$uid); $s->execute();
+        return $s->affected_rows > 0;
     }
 
-    // ─── SAVED JOBS 
+    // ── Saved Jobs ────────────────────────────────────────────────────────────
 
-    public function getSavedJobs(int $userId): array {
+    public function getSavedJobs(int $uid): array {
         $db = getDB();
-        $stmt = $db->prepare(
-            "SELECT sj.*, j.title, j.location, j.job_type, j.salary_min, j.salary_max,
-                    j.deadline, j.status AS job_status,
-                    ep.company_name, ep.logo_path
-             FROM saved_jobs sj
-             JOIN jobs j ON sj.job_id = j.id
-             LEFT JOIN employer_profiles ep ON j.employer_id = ep.user_id
-             WHERE sj.user_id = ?
-             ORDER BY sj.saved_at DESC"
+        $s = $db->prepare(
+            "SELECT sj.*,j.title,j.location,j.job_type,j.salary_min,j.salary_max,
+             j.deadline,j.status AS job_status,ep.company_name,ep.logo_path
+             FROM saved_jobs sj JOIN jobs j ON sj.job_id=j.id
+             LEFT JOIN employer_profiles ep ON j.employer_id=ep.user_id
+             WHERE sj.user_id=? ORDER BY sj.saved_at DESC"
         );
-        $stmt->bind_param('i', $userId);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $s->bind_param('i',$uid); $s->execute();
+        return $s->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function isJobSaved(int $userId, int $jobId): bool {
+    public function isJobSaved(int $uid, int $jid): bool {
         $db = getDB();
-        $stmt = $db->prepare(
-            "SELECT id FROM saved_jobs WHERE user_id = ? AND job_id = ? LIMIT 1"
-        );
-        $stmt->bind_param('ii', $userId, $jobId);
-        $stmt->execute();
-        $stmt->store_result();
-        return $stmt->num_rows > 0;
+        $s = $db->prepare("SELECT id FROM saved_jobs WHERE user_id=? AND job_id=? LIMIT 1");
+        $s->bind_param('ii',$uid,$jid); $s->execute(); $s->store_result();
+        return $s->num_rows > 0;
     }
 
-    public function saveJob(int $userId, int $jobId): bool {
+    public function saveJob(int $uid, int $jid): bool {
         $db = getDB();
-        $stmt = $db->prepare(
-            "INSERT IGNORE INTO saved_jobs (user_id, job_id, saved_at) VALUES (?, ?, NOW())"
-        );
-        $stmt->bind_param('ii', $userId, $jobId);
-        return $stmt->execute();
+        $s = $db->prepare("INSERT IGNORE INTO saved_jobs (user_id,job_id,saved_at) VALUES (?,?,NOW())");
+        $s->bind_param('ii',$uid,$jid); return $s->execute();
     }
 
-    public function unsaveJob(int $userId, int $jobId): bool {
+    public function unsaveJob(int $uid, int $jid): bool {
         $db = getDB();
-        $stmt = $db->prepare(
-            "DELETE FROM saved_jobs WHERE user_id = ? AND job_id = ?"
-        );
-        $stmt->bind_param('ii', $userId, $jobId);
-        return $stmt->execute();
+        $s = $db->prepare("DELETE FROM saved_jobs WHERE user_id=? AND job_id=?");
+        $s->bind_param('ii',$uid,$jid); return $s->execute();
     }
 
-    // ─── JOB ALERTS
+    // ── Alerts ────────────────────────────────────────────────────────────────
 
-    public function getAlertsBySeeker(int $seekerId): array {
+    public function getAlertsBySeeker(int $uid): array {
         $db = getDB();
-        $stmt = $db->prepare(
-            "SELECT ja.*, c.name AS category_name
-             FROM job_alerts ja
-             LEFT JOIN categories c ON ja.category_id = c.id
-             WHERE ja.seeker_id = ?
-             ORDER BY ja.created_at DESC"
+        $s = $db->prepare(
+            "SELECT ja.*,c.name AS category_name
+             FROM job_alerts ja LEFT JOIN categories c ON ja.category_id=c.id
+             WHERE ja.seeker_id=? ORDER BY ja.created_at DESC"
         );
-        $stmt->bind_param('i', $seekerId);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $s->bind_param('i',$uid); $s->execute();
+        return $s->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function createAlert(
-        int $seekerId,
-        string $keyword,
-        int $categoryId = 0,
-        string $location = '',
-        string $jobType = ''
-    ): bool {
+    public function createAlert(int $uid, string $kw, int $catId=0, string $loc='', string $type=''): bool {
         $db = getDB();
-        $catId = $categoryId > 0 ? $categoryId : null;
-        $stmt = $db->prepare(
-            "INSERT INTO job_alerts (seeker_id, keyword, category_id, location, job_type, created_at)
-             VALUES (?, ?, ?, ?, ?, NOW())"
+        $cid = $catId > 0 ? $catId : null;
+        $s = $db->prepare(
+            "INSERT INTO job_alerts (seeker_id,keyword,category_id,location,job_type,created_at)
+             VALUES (?,?,?,?,?,NOW())"
         );
-        $stmt->bind_param('isiss', $seekerId, $keyword, $catId, $location, $jobType);
-        return $stmt->execute();
+        $s->bind_param('isiss',$uid,$kw,$cid,$loc,$type); return $s->execute();
     }
 
-    public function deleteAlert(int $alertId, int $seekerId): bool {
+    public function deleteAlert(int $aid, int $uid): bool {
         $db = getDB();
-        $stmt = $db->prepare(
-            "DELETE FROM job_alerts WHERE id = ? AND seeker_id = ?"
-        );
-        $stmt->bind_param('ii', $alertId, $seekerId);
-        return $stmt->execute();
+        $s = $db->prepare("DELETE FROM job_alerts WHERE id=? AND seeker_id=?");
+        $s->bind_param('ii',$aid,$uid); return $s->execute();
     }
 
-    // ─── MESSAGES 
-
-    public function getInboxMessages(int $userId): array {
-        $db = getDB();
-        $stmt = $db->prepare(
-            "SELECT m.*, u.name AS sender_name, u.profile_pic AS sender_pic,
-                    j.title AS job_title
-             FROM messages m
-             JOIN users u ON m.sender_id = u.id
-             LEFT JOIN applications a ON m.application_id = a.id
-             LEFT JOIN jobs j ON a.job_id = j.id
-             WHERE m.recipient_id = ?
-             ORDER BY m.sent_at DESC"
-        );
-        $stmt->bind_param('i', $userId);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    }
-
-    public function sendMessage(
-        int $senderId,
-        int $recipientId,
-        int $applicationId,
-        string $body
-    ): bool {
-        $db = getDB();
-        $stmt = $db->prepare(
-            "INSERT INTO messages (sender_id, recipient_id, application_id, body, sent_at, is_read)
-             VALUES (?, ?, ?, ?, NOW(), 0)"
-        );
-        $stmt->bind_param('iiis', $senderId, $recipientId, $applicationId, $body);
-        return $stmt->execute();
-    }
-
-    public function markMessageRead(int $messageId, int $recipientId): bool {
-        $db = getDB();
-        $stmt = $db->prepare(
-            "UPDATE messages SET is_read = 1 WHERE id = ? AND recipient_id = ?"
-        );
-        $stmt->bind_param('ii', $messageId, $recipientId);
-        return $stmt->execute();
-    }
-
-    public function markAllMessagesRead(int $recipientId): bool {
-        $db = getDB();
-        $stmt = $db->prepare(
-            "UPDATE messages SET is_read = 1 WHERE recipient_id = ? AND is_read = 0"
-        );
-        $stmt->bind_param('i', $recipientId);
-        return $stmt->execute();
-    }
-
-    public function getRecruiterOutreach(int $seekerId): array {
-        $db = getDB();
-        $stmt = $db->prepare(
-            "SELECT ro.*, u.name AS recruiter_name, u.profile_pic,
-                    rp.agency_name, j.title AS job_title
-             FROM recruiter_outreach ro
-             JOIN users u ON ro.recruiter_id = u.id
-             LEFT JOIN recruiter_profiles rp ON ro.recruiter_id = rp.user_id
-             LEFT JOIN jobs j ON ro.job_id = j.id
-             WHERE ro.seeker_id = ?
-             ORDER BY ro.sent_at DESC"
-        );
-        $stmt->bind_param('i', $seekerId);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    }
-
-    public function updateOutreachStatus(int $outreachId, int $seekerId, string $status): bool {
-        $db = getDB();
-        $stmt = $db->prepare(
-            "UPDATE recruiter_outreach SET status = ? WHERE id = ? AND seeker_id = ?"
-        );
-        $stmt->bind_param('sii', $status, $outreachId, $seekerId);
-        return $stmt->execute();
-    }
-
-    // ─── COMPLAINTS
-
-    public function submitComplaint(int $submitterId, int $subjectId, string $description): bool {
-        $db = getDB();
-        $stmt = $db->prepare(
-            "INSERT INTO complaints (submitter_id, subject_id, description, status, created_at)
-             VALUES (?, ?, ?, 'open', NOW())"
-        );
-        $stmt->bind_param('iis', $submitterId, $subjectId, $description);
-        return $stmt->execute();
-    }
-
-    // ─── NOTIFICATIONS
-
+    // ── Alert matching — PERFORMANCE FIX: single UNION query ─────────────────
 
     public function getMatchedAlertJobs(int $seekerId): array {
-        $db = getDB();
-        // Fetch seeker's alerts
+        $db     = getDB();
         $alerts = $this->getAlertsBySeeker($seekerId);
         if (empty($alerts)) return [];
 
-        $matched = [];
+        // Build one UNION query instead of N separate queries
+        $unionParts = []; $params = []; $types = '';
+
         foreach ($alerts as $alert) {
-            $jobs = $this->searchJobs(
-                $alert['keyword'],
-                (int)($alert['category_id'] ?? 0),
-                $alert['location'] ?? '',
-                $alert['job_type'] ?? ''
-            );
-            foreach ($jobs as $job) {
-                $matched[$job['id']] = $job; // deduplicate by job id
+            $kw = '%' . ($alert['keyword'] ?? '') . '%';
+            $part = "(SELECT j.id,j.title,j.location,j.job_type,j.deadline,
+                             ep.company_name,ep.logo_path
+                      FROM jobs j
+                      LEFT JOIN employer_profiles ep ON j.employer_id=ep.user_id
+                      WHERE j.status='active'
+                        AND (j.title LIKE ? OR j.description LIKE ? OR ep.company_name LIKE ?)";
+            $params[] = $kw; $params[] = $kw; $params[] = $kw; $types .= 'sss';
+
+            if (!empty($alert['category_id'])) {
+                $part .= " AND j.category_id=?"; $params[] = (int)$alert['category_id']; $types .= 'i';
             }
+            if (!empty($alert['location'])) {
+                $l = '%'.$alert['location'].'%'; $part .= " AND j.location LIKE ?"; $params[] = $l; $types .= 's';
+            }
+            if (!empty($alert['job_type'])) {
+                $part .= " AND j.job_type=?"; $params[] = $alert['job_type']; $types .= 's';
+            }
+            $part .= ")";
+            $unionParts[] = $part;
         }
-        return array_values($matched);
+
+        $sql = implode(' UNION ', $unionParts) . " ORDER BY deadline ASC LIMIT 20";
+        $s   = $db->prepare($sql);
+        if ($params) $s->bind_param($types, ...$params);
+        $s->execute();
+        return $s->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    // ── Messages ──────────────────────────────────────────────────────────────
+
+    public function getInboxMessages(int $uid): array {
+        $db = getDB();
+        $s = $db->prepare(
+            "SELECT m.*,u.name AS sender_name,u.profile_pic AS sender_pic,j.title AS job_title
+             FROM messages m JOIN users u ON m.sender_id=u.id
+             LEFT JOIN applications a ON m.application_id=a.id
+             LEFT JOIN jobs j ON a.job_id=j.id
+             WHERE m.recipient_id=? ORDER BY m.sent_at DESC"
+        );
+        $s->bind_param('i',$uid); $s->execute();
+        return $s->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function sendMessage(int $from, int $to, int $appId, string $body): bool {
+        $db = getDB();
+        $s = $db->prepare(
+            "INSERT INTO messages (sender_id,recipient_id,application_id,body,sent_at,is_read)
+             VALUES (?,?,?,?,NOW(),0)"
+        );
+        $s->bind_param('iiis',$from,$to,$appId,$body); return $s->execute();
+    }
+
+    public function markMessageRead(int $msgId, int $uid): bool {
+        $db = getDB();
+        $s = $db->prepare("UPDATE messages SET is_read=1 WHERE id=? AND recipient_id=?");
+        $s->bind_param('ii',$msgId,$uid); return $s->execute();
+    }
+
+    public function markAllMessagesRead(int $uid): bool {
+        $db = getDB();
+        $s = $db->prepare("UPDATE messages SET is_read=1 WHERE recipient_id=? AND is_read=0");
+        $s->bind_param('i',$uid); return $s->execute();
+    }
+
+  
+    public function verifyApplicationOwnership(int $appId, int $seekerId, int $recipientId): bool {
+        $db = getDB();
+        $s = $db->prepare(
+            "SELECT a.id FROM applications a
+             JOIN jobs j ON a.job_id=j.id
+             WHERE a.id=? AND a.seeker_id=? AND j.employer_id=? LIMIT 1"
+        );
+        $s->bind_param('iii',$appId,$seekerId,$recipientId);
+        $s->execute(); $s->store_result();
+        return $s->num_rows > 0;
+    }
+
+    // ── Recruiter Outreach ────────────────────────────────────────────────────
+
+    public function getRecruiterOutreach(int $uid): array {
+        $db = getDB();
+        $s = $db->prepare(
+            "SELECT ro.*,u.name AS recruiter_name,u.profile_pic,
+             rp.agency_name,j.title AS job_title
+             FROM recruiter_outreach ro JOIN users u ON ro.recruiter_id=u.id
+             LEFT JOIN recruiter_profiles rp ON ro.recruiter_id=rp.user_id
+             LEFT JOIN jobs j ON ro.job_id=j.id
+             WHERE ro.seeker_id=? ORDER BY ro.sent_at DESC"
+        );
+        $s->bind_param('i',$uid); $s->execute();
+        return $s->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function updateOutreachStatus(int $oid, int $uid, string $status): bool {
+        $db = getDB();
+        $s = $db->prepare("UPDATE recruiter_outreach SET status=? WHERE id=? AND seeker_id=?");
+        $s->bind_param('sii',$status,$oid,$uid); return $s->execute();
+    }
+
+    // ── Complaints ────────────────────────────────────────────────────────────
+
+    public function submitComplaint(int $from, int $subject, string $desc): bool {
+        $db = getDB();
+        $s = $db->prepare(
+            "INSERT INTO complaints (submitter_id,subject_id,description,status,created_at)
+             VALUES (?,?,?,'open',NOW())"
+        );
+        $s->bind_param('iis',$from,$subject,$desc); return $s->execute();
     }
 }
