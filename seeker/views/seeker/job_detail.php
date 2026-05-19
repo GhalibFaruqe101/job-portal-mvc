@@ -30,7 +30,8 @@ require __DIR__ . '/../layouts/header.php';
         </div>
 
         <!-- Save/Unsave (AJAX) -->
-        <form method="post" action="<?= BASE_PATH ?>/index.php?action=saveJob" id="save-form">
+        <form method="post" action="index.php?action=saveJob" id="save-form">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf ?? '') ?>">
             <input type="hidden" name="job_id" value="<?= (int)$job['id'] ?>">
             <button type="button" id="save-btn" class="btn-outline" onclick="toggleSave(<?= (int)$job['id'] ?>)">
                 <?= $isSaved ? ' Saved' : '+ Save Job' ?>
@@ -67,19 +68,24 @@ require __DIR__ . '/../layouts/header.php';
                 <?php if (!empty($job['company_desc'])): ?><p><?= nl2br(htmlspecialchars($job['company_desc'])) ?></p><?php endif; ?>
                 <?php if (!empty($job['website'])): ?><p><a href="<?= htmlspecialchars($job['website']) ?>" target="_blank" rel="noopener">Company Website ↗</a></p><?php endif; ?>
                 <p class="muted">Posted by: <?= htmlspecialchars($job['poster_name'] ?? '—') ?></p>
-                <a href="<?= BASE_PATH ?>/index.php?action=complaint&subject_id=<?= (int)$job['employer_id'] ?>" class="muted small">
+                <a href="index.php?action=complaint&subject_id=<?= (int)$job['employer_id'] ?>" class="muted small">
                     Report this posting
                 </a>
             </section>
 
             <!-- Apply Form -->
-            <?php if ($alreadyApplied): ?>
-                <div class="card notice">You have already applied to this job.</div>
+            <?php if ($deadlinePassed): ?>
+                <div class="card notice" style="background:#fcebeb;border-color:#f5c6c6;color:#a32d2d;">
+                    ⏰ The application deadline for this job has passed.
+                </div>
+            <?php elseif ($alreadyApplied): ?>
+                <div class="card notice">✅ You have already applied to this job.</div>
             <?php else: ?>
             <section class="card">
                 <h2>Apply Now</h2>
                 <?php if ($error): ?><p class="error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
-                <form method="post" action="<?= BASE_PATH ?>/index.php?action=applyJob" enctype="multipart/form-data">
+                <form method="post" action="index.php?action=applyJob" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf ?? '') ?>">
                     <input type="hidden" name="job_id" value="<?= (int)$job['id'] ?>">
                     <label>Cover Letter
                         <textarea name="cover_letter" rows="5" placeholder="Introduce yourself and explain why you're a great fit…"></textarea>
@@ -100,7 +106,6 @@ require __DIR__ . '/../layouts/header.php';
 </div>
 
 <script>
-const basePath = "<?= BASE_PATH ?>";
 function toggleSave(jobId) {
     const btn = document.getElementById('save-btn');
     const xhr = new XMLHttpRequest();

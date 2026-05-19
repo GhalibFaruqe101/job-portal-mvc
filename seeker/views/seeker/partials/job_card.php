@@ -1,17 +1,14 @@
 <?php
-// views/seeker/partials/job_card.php
-// Reusable partial — expects $job array from searchJobs()
-// Used by jobs.php for server-side initial render.
-// AJAX re-renders use renderJobs() in jobs.php JS instead.
+
 ?>
 <div class="job-card <?= $job['is_featured'] ? 'featured' : '' ?>">
     <div class="job-card-top">
         <?php if (!empty($job['logo_path'])): ?>
-            <img src="<?= BASE_PATH . '/' . htmlspecialchars($job['logo_path']) ?>" class="company-logo" alt="">
+            <img src="<?= htmlspecialchars($job['logo_path']) ?>" class="company-logo" alt="">
         <?php endif; ?>
 
         <div style="flex:1">
-            <a href="<?= BASE_PATH ?>/index.php?action=jobDetail&id=<?= (int)$job['id'] ?>" class="job-title">
+            <a href="index.php?action=jobDetail&id=<?= (int)$job['id'] ?>" class="job-title">
                 <?= htmlspecialchars($job['title']) ?>
             </a>
             <p class="job-company">
@@ -37,18 +34,19 @@
             </div>
         </div>
 
-        <form method="post" action="<?= BASE_PATH ?>/index.php?action=saveJob" style="flex-shrink:0">
+        <form method="post" action="index.php?action=saveJob" style="flex-shrink:0">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf ?? '') ?>">
             <input type="hidden" name="job_id" value="<?= (int)$job['id'] ?>">
             <button type="submit" class="btn-sm" title="Save job">🔖 Save</button>
         </form>
     </div>
 
     <div class="job-card-footer">
-        <span class="muted">📍 <?= htmlspecialchars($job['location']) ?></span>
+        <span class="muted"> <?= htmlspecialchars($job['location']) ?></span>
         <span class="muted">
             Deadline: <?= !empty($job['deadline']) ? date('d M Y', strtotime($job['deadline'])) : 'Open' ?>
         </span>
-        <a href="<?= BASE_PATH ?>/index.php?action=jobDetail&id=<?= (int)$job['id'] ?>" class="btn-sm">
+        <a href="index.php?action=jobDetail&id=<?= (int)$job['id'] ?>" class="btn-sm">
             View &amp; Apply
         </a>
     </div>
