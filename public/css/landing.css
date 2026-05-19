@@ -1,0 +1,188 @@
+/* /public/css/landing.css */
+@import url('https://fonts.cdnfonts.com/css/ovelion');
+
+/* --- Corporate Landing Page Styles (Dark/Green) --- */
+body.landing-page {
+    background: linear-gradient(135deg, #000000 0%, #0a1f0d 50%, #000000 100%);
+    color: #f8fafc;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* Custom Navbar for Landing Page */
+.landing-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 5%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(44, 235, 37, 0.15);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.landing-nav .logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary-color, #2ceb25);
+    text-decoration: none;
+    letter-spacing: -0.5px;
+}
+
+/* Hero Section */
+.hero-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6rem 1rem 4rem;
+    background: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.hero-title {
+    font-family: 'Ovelion', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 1.25rem;
+    letter-spacing: -1px;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: 1.125rem;
+    color: #cbd5e1;
+    max-width: 650px;
+    margin-bottom: 4rem;
+    line-height: 1.6;
+}
+
+/* Role Cards Container */
+.roles-wrapper {
+    background: transparent;
+    padding: 4rem 5%;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    width: 100%;
+}
+
+/* Individual Role Card */
+.role-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 2.5rem 2rem;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.role-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--primary-color, #2ceb25);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.role-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    border-color: rgba(44, 235, 37, 0.4);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.role-card:hover::before {
+    opacity: 1;
+}
+
+.role-card.disabled {
+    background: rgba(255, 255, 255, 0.01);
+    cursor: not-allowed;
+    border-color: rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+}
+
+.role-card.disabled:hover {
+    transform: none;
+    border-color: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.role-card.disabled::after {
+    content: 'Coming Soon';
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #94a3b8;
+}
+
+.role-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color, #2ceb25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.role-icon svg {
+    width: 100%;
+    height: 100%;
+    stroke-width: 1.5;
+}
+
+.role-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+}
+
+.role-desc {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    text-align: left;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-title { font-size: 2.5rem; }
+    .hero-section { padding: 4rem 1rem 3rem; }
+    .roles-grid { grid-template-columns: 1fr; }
+}

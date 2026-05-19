@@ -1,42 +1,36 @@
 <?php
-// views/seeker/outreach.php
 $pageTitle = 'Recruiter Outreach';
-$activeNav = 'messages';
 require __DIR__ . '/../layouts/header.php';
 ?>
-<div class="container">
-    <h1>Recruiter Outreach</h1>
-    <p class="muted">Recruiters who contacted you about specific opportunities:</p>
-    <?php if (empty($outreach)): ?>
-        <p class="muted">No outreach messages yet.</p>
-    <?php else: ?>
-    <div class="message-list">
-        <?php foreach ($outreach as $o): ?>
-        <div class="message-item <?= $o['status'] === 'sent' ? 'unread' : '' ?>">
-            <div class="msg-meta">
-                <strong><?= htmlspecialchars($o['recruiter_name']) ?></strong>
-                <?php if (!empty($o['agency_name'])): ?>
-                    <span class="muted">(<?= htmlspecialchars($o['agency_name']) ?>)</span>
-                <?php endif; ?>
-                <?php if (!empty($o['job_title'])): ?>
-                    <span class="muted">re: <?= htmlspecialchars($o['job_title']) ?></span>
-                <?php endif; ?>
-                <span class="status-badge status-<?= $o['status'] ?>"><?= ucfirst($o['status']) ?></span>
-            </div>
-            <p><?= nl2br(htmlspecialchars($o['message'])) ?></p>
-            <?php if ($o['status'] === 'sent'): ?>
-            <form method="post" action="<?= BASE_PATH ?>/index.php?action=respondOutreach" style="display:inline-flex;gap:8px">
-                <input type="hidden" name="outreach_id" value="<?= (int)$o['id'] ?>">
-                <input type="hidden" name="status" value="responded">
-                <button type="submit" class="btn-sm">Mark as Responded</button>
-            </form>
-            <?php endif; ?>
-            <?php if (!empty($o['job_id'])): ?>
-                <a href="<?= BASE_PATH ?>/index.php?action=jobDetail&id=<?= (int)$o['job_id'] ?>" class="btn-sm">View Job</a>
-            <?php endif; ?>
+
+<div class="container" style="max-width: 800px; margin: 40px auto; padding: 20px;">
+    <h2>Recruiter Outreach</h2>
+    <p style="color: #666; margin-bottom: 30px;">Recruiters who contacted you about specific opportunities:</p>
+
+    <?php if (empty($outreach_messages)): ?>
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; text-align: center; color: #777;">
+            No outreach messages yet.
         </div>
-        <?php endforeach; ?>
-    </div>
+    <?php else: ?>
+        <div class="outreach-list">
+            <?php foreach ($outreach_messages as $msg): ?>
+                <div style="border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                    <h3 style="margin-top: 0; color: #2c3e50;">Role: <?= htmlspecialchars($msg['job_title'] ?? 'Unknown Job') ?></h3>
+                    
+                    <div style="margin-bottom: 15px; font-size: 0.95em; color: #555;">
+                        <strong>From:</strong> <?= htmlspecialchars($msg['recruiter_name'] ?? 'Unknown') ?> 
+                        <span style="color: #888;">(<?= htmlspecialchars($msg['agency_name'] ?? 'Direct Employer') ?>)</span>
+                        <br>
+                        <strong>Date:</strong> <?= date('F j, Y, g:i a', strtotime($msg['sent_at'])) ?>
+                    </div>
+
+                    <div style="background: #f4f6f8; padding: 15px; border-left: 4px solid #3498db; border-radius: 4px; color: #444; line-height: 1.6;">
+                        <?= nl2br(htmlspecialchars($msg['message'])) ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
     <?php endif; ?>
 </div>
+
 <?php require __DIR__ . '/../layouts/footer.php'; ?>

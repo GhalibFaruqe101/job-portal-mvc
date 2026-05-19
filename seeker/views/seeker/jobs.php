@@ -70,7 +70,6 @@ require __DIR__ . '/../layouts/header.php';
 </div>
 
 <script>
-const basePath = "<?= BASE_PATH ?>";
 let debounceTimer;
 
 function doSearch() {
@@ -86,7 +85,7 @@ function doSearch() {
         job_type: jobType, exp_level: expLevel, sal_min: salMin, sal_max: salMax });
 
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', basePath + '/api/jobs_search.php?' + params.toString(), true);
+    xhr.open('GET', api/jobs_search.php?' + params.toString(), true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
     xhr.onreadystatechange = function () {

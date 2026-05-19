@@ -19,7 +19,7 @@ require __DIR__ . '/../layouts/header.php';
         <section class="card">
             <h2>Recent Applications</h2>
             <?php if (empty($applications)): ?>
-                <p class="muted">No applications yet. <a href="<?= BASE_PATH ?>/index.php?action=jobs">Find jobs →</a></p>
+                <p class="muted">No applications yet. <a href="index.php?action=jobs">Find jobs →</a></p>
             <?php else: ?>
                 <ul class="app-list">
                     <?php foreach ($applications as $app): ?>
@@ -30,7 +30,7 @@ require __DIR__ . '/../layouts/header.php';
                     </li>
                     <?php endforeach; ?>
                 </ul>
-                <a href="<?= BASE_PATH ?>/index.php?action=applications">View all →</a>
+                <a href="index.php?action=applications">View all →</a>
             <?php endif; ?>
         </section>
 
@@ -38,12 +38,12 @@ require __DIR__ . '/../layouts/header.php';
         <section class="card">
             <h2>Matched Job Alerts</h2>
             <?php if (empty($matchedJobs)): ?>
-                <p class="muted">No matches yet. <a href="<?= BASE_PATH ?>/index.php?action=alerts">Set up alerts →</a></p>
+                <p class="muted">No matches yet. <a href="index.php?action=alerts">Set up alerts →</a></p>
             <?php else: ?>
                 <ul class="app-list">
                     <?php foreach ($matchedJobs as $job): ?>
                     <li>
-                        <a href="<?= BASE_PATH ?>/index.php?action=jobDetail&id=<?= (int)$job['id'] ?>">
+                        <a href="index.php?action=jobDetail&id=<?= (int)$job['id'] ?>">
                             <?= htmlspecialchars($job['title']) ?>
                         </a>
                         <span><?= htmlspecialchars($job['company_name'] ?? '') ?> · <?= htmlspecialchars($job['location']) ?></span>

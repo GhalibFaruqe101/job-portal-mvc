@@ -10,7 +10,8 @@ require __DIR__ . '/../layouts/header.php';
   
     <section class="card">
         <h2>Create New Alert</h2>
-        <form method="post" action="<?= BASE_PATH ?>/index.php?action=createAlert" class="inline-form">
+        <form method="post" action="index.php?action=createAlert" class="inline-form">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf ?? '') ?>">
             <input type="text" name="keyword" placeholder="Keyword (e.g. software engineer)" required>
             <select name="category_id">
                 <option value="">All Categories</option>
@@ -45,8 +46,9 @@ require __DIR__ . '/../layouts/header.php';
                 <td><?= htmlspecialchars($alert['location'] ?: 'Any') ?></td>
                 <td><?= htmlspecialchars($alert['job_type'] ?: 'Any') ?></td>
                 <td>
-                    <form method="post" action="<?= BASE_PATH ?>/index.php?action=deleteAlert"
+                    <form method="post" action="index.php?action=deleteAlert"
                           onsubmit="return confirm('Delete this alert?')">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf ?? '') ?>">
                         <input type="hidden" name="alert_id" value="<?= (int)$alert['id'] ?>">
                         <button type="submit" class="btn-sm btn-danger">Delete</button>
                     </form>

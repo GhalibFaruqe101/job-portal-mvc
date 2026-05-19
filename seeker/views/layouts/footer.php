@@ -1,9 +1,3 @@
-
 </main>
-
-<footer class="site-footer">
-    <p>&copy; <?= date('Y') ?> Job Portal</p>
-</footer>
-
-</body>
-</html>
+<footer class="site-footer"><p>&copy; <?= date('Y') ?> JobPortal</p></footer>
+</body></html>
